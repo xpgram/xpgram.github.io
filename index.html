@@ -1,12 +1,83 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-  </head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="./css/bootstrap_lux.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+
+    <title>deivn.bddiy</title>
+  </head>
   <body>
-    <h1>Yea</h1>
-    <p>get some</p>
+
+    <!--
+      Struggles...
+      Ugh.
+
+      So, my image is a good size, but I can't get it to drop down any.
+      I don't know how to center/center an element inside a div or whatever ~using Bootstrap~.
+      Bootstrap is cool, but fuck if it feels limiting at times.
+
+      I don't know how to set the height of my div here. Nothing is working.
+      I think I need to experiment in a new .html file until I figure it out.
+      That way I won't leave a bunch of shit around this place because I can't remember what was written
+      and what was me dicking around.
+
+      In any case, the idea... works. It's neat, I guess.
+      There's some artistic flair to it, if it don't got dat sweat anime yet.
+
+      My dream is to have this weird black thing be animated.
+      There are a litany of issues, however:
+       - How do I do that?
+       - Also, what am I going to show? FF6 isn't mine. I'll probably get sued.
+      -->
+
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-default navbar-fixed-top bg-dark">
+        <div class="container">
+
+            <div class="navbar-brand">
+                <a href="#"> <img src="./img/dB_noDot.png" width="36" height="40" class="img-responsive" id="logo"> </a>
+                <span class="text-light">&nbsp;deivn<span class="text-xpg">.</span>bddiy</span>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Top
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off"> About
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option3" autocomplete="off"> Skills Clipart
+              </label>
+            </div>
+
+        </div>
+    </nav>
+
+    <div id="landing" class="container-fluid bg-primary bg-xpg px-0" style="height: 800px;">
+      <!-- <img src="./img/zelda_test.png" width="100%" class="img-fluid" alt=""> -->
+
+      <!-- Marquee -->
+      <div class="my-auto">
+        <div class="jumbotron-fluid text-center my-au">
+          <img src="./img/dB.png" width="520" height="450" alt="" class="img-fluid text-center">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.buttflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>
