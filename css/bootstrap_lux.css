@@ -34,7 +34,7 @@
   --danger: #d9534f;
   --light: #fff;
   --dark: #343a40;
-  --xpg: #D3739E;
+  --xpg: #A15481; /*#D3739E;*/
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -169,7 +169,7 @@ a {
 }
 
 a:hover {
-  color: black;
+  color: #AAA;
   text-decoration: underline;
 }
 
@@ -2603,6 +2603,18 @@ textarea.form-control {
 a.btn.disabled,
 fieldset:disabled a.btn {
   pointer-events: none;
+}
+
+.btn-xpg-black {
+  color: #fff;
+  background-color: #444;
+  border-color: #444;
+}
+
+.btn-xpg-black:hover {
+  color: #fff;
+  background-color: #070707;
+  border-color: #010000;
 }
 
 .btn-primary {
@@ -6906,12 +6918,6 @@ a.close.disabled {
   vertical-align: text-top !important;
 }
 
-.bg-xpg {
-  background-image: url('../img/zelda_test.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
 .bg-primary {
   background-color: #1a1a1a !important;
 }
@@ -10363,10 +10369,6 @@ button.bg-dark:focus {
 
 .font-italic {
   font-style: italic !important;
-}
-
-.text-xpg {
-  color: #D3739E;
 }
 
 .text-white {

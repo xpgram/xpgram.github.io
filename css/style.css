@@ -1,4 +1,83 @@
 #landing {
   width: 100%;
-  height: 100vh;
+  height: 90vh;
+}
+
+#info {
+  box-shadow: 0 0 5px 2px #A15481;
+}
+
+#footer {
+  box-shadow: inset 1px 4px 12px -6px #000D;
+}
+
+.text-xpg {
+  color: #d3739e;
+}
+
+.text-xpg-light {
+  color: #CCC;
+}
+
+.bg-xpg {
+  background-image: url('../img/ff6_test.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg-xpg-black {
+  background-color: #111;
+}
+
+.img-db {
+  max-width: 400px;
+  width: 40%;
+}
+
+.img-db-bitshift {
+  max-width: 200px;
+  width: 20%;
+}
+
+.navbar-separator {
+  height: 100%;
+  border-left: 1.5px solid #778;
+  margin-right: 2rem;
+  padding-top: 2.5rem;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.btn-xpg {
+  width: 150px;
+}
+
+.btn-xpg-black {
+  color: #fff;
+  background-color: #111;
+  border-color: #111;
+}
+
+.btn-xpg-black:hover {
+  color: #fff;
+  background-color: #050505;
+  border-color: #010000;
+}
+
+.w-xpg-l {
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.w-xpg-m {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.w-xpg-s {
+  min-width: 150px;
+  max-width: 250px;
 }

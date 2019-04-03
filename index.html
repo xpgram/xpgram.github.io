@@ -38,41 +38,122 @@
       -->
 
     <!-- Nav Bar -->
-    <nav class="navbar navbar-default navbar-fixed-top bg-dark">
+    <nav class="navbar navbar-default navbar-expand-lg sticky-top bg-dark">
         <div class="container">
 
             <div class="navbar-brand">
-                <a href="#"> <img src="./img/dB_noDot.png" width="36" height="40" class="img-responsive" id="logo"> </a>
+                <img src="./img/dB_noDot.png" width="36" height="40" class="img-responsive" id="logo">
                 <span class="text-light">&nbsp;deivn<span class="text-xpg">.</span>bddiy</span>
             </div>
             
             <!-- Navigation Buttons -->
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-primary active">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Top
-              </label>
-              <label class="btn btn-primary">
-                <input type="radio" name="options" id="option2" autocomplete="off"> About
-              </label>
-              <label class="btn btn-primary">
-                <input type="radio" name="options" id="option3" autocomplete="off"> Skills Clipart
-              </label>
-            </div>
-
+            <ul class="navbar-nav flex-row">
+              <li class="nav-item active">
+                <a class="nav-link text-light" href="#about">About Me</a>
+              </li>
+              <div class="navbar-separator"></div>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="#projects">Projects</a>
+              </li>
+              <!-- <div class="navbar-separator"></div>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="#contact">Contact</a>
+              </li> -->
+            </ul>
         </div>
     </nav>
 
-    <div id="landing" class="container-fluid bg-primary bg-xpg px-0" style="height: 800px;">
-      <!-- <img src="./img/zelda_test.png" width="100%" class="img-fluid" alt=""> -->
-
-      <!-- Marquee -->
-      <div class="my-auto">
-        <div class="jumbotron-fluid text-center my-au">
-          <img src="./img/dB.png" width="520" height="450" alt="" class="img-fluid text-center">
+    <!-- Marquee -->
+    <section id="landing" class="container-fluid bg-primary bg-xpg">
+      <div class="row h-100">
+        <div class="col-md-12 my-auto">
+          <div class="mx-auto text-center text-nowrap align-middle d-block">
+            <img src="./img/dB2_bs.png" alt="" class="img-db-bitshift img-fluid align-middle mr-4">
+            <img src="./img/dB2.png" alt="" class="img-db img-fluid align-middle">
+            <img src="./img/dB2_bs.png" alt="" class="img-db-bitshift img-fluid align-middle ml-4">
+          </div>
         </div>
       </div>
 
-    </div>
+      <!-- Add some kind of horizontal rule, #A15481, that invites the user to scroll down -->
+      <!-- Add it here, I mean -->
+
+    </section>
+
+    <!-- Info Panel -->
+    <section id="info" class="container-fluid bg-primary p-3">
+
+      <div class="card-deck">
+
+        <!-- About Me Section -->
+        <div id="about" class="container-fluid w-xpg-l col-5 text-xpg-light bg-xpg-black p-3 mb-3 mx-auto">
+          <h1 class="text-xpg-light text-nowrap pb-2">About Me</h1>
+          <div class="pb-3 text-xpg-light">
+            <p>
+              I'm an indie games' developer and artist based in Oregon.
+            </p>
+            <p>
+              I've been thinking, writing, playing and designing games since I was a small-ish, young-ish boy.
+              I love games. They're maybe the only thing I love.
+            </p>
+            <p>
+              I have (hobbyist) experience working with every part of the game-design process because
+              I've been doing it alone for years.
+            </p>
+            <p>
+              I don't have much to show off <em>right now</em>. That's regrettable. I want to take my
+              career somewhere, so I'm working on fixing that. The <a href="#projects" class="text-xpg-light underline">Projects</a>
+              section below is where I'll put it.
+            </p>
+          </div>
+        </div>
+
+        <!-- What I Know Section -->
+        <div id="skills" class="container-fluid w-xpg-m col-5 text-xpg-light bg-primary p-3 mb-3 mx-auto">
+          <h1 class="text-xpg-light text-nowrap pb-2">What I Know</h1>
+          <div class="pb-3 text-xpg-light">
+            <p class="mb-1">Languages</p>
+            <p>C# / Java / Python / HTML5 / CSS3</p>
+            <p class="mb-1">Tools</p>
+            <p>Visual Studio / Eclipse / Unity</p>
+          </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div id="contact" class="container-fluid w-xpg-s col-3 text-xpg-light bg-primary p-3 mb-3 mx-auto">
+          <h1 class="text-xpg-light text-nowrap pb-2">Contact</h1>
+          <div class="pb-3 text-xpg-light">
+            <p><a class="link text-xpg-light text-nowrap pl-2" href="mailto:xp.gram@gmail.com" target="_blank">xp.gram@gmail.com</a></p>
+            <!-- Buttons for career/social accounts -->
+            <div class="pb-2">
+              <a class="btn btn-xpg btn-xpg-black" href="https://www.linkedin.com/in/deivn-bddiy" target="_blank" role="button">
+                LinkedIn <img src="./img/icon_extlink.png" width="14" alt="">
+              </a>
+            </div>
+            <div class="pb-2">
+              <a class="btn btn-xpg btn-xpg-black" href="https://github.com/xpgram" target="_blank" role="button">
+                github <img src="./img/icon_extlink.png" width="14" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Demos or pictures of my work -->
+      <div id="projects" class="card text-xpg-light bg-xpg-black">
+        <h1 class="card-header text-xpg-light pb-0">Projects</h1>
+        <div class="card-body">
+          <p class="card-text">Coming Soon..</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Copyright (Ha!) -->
+    <footer id="footer" class="container-fluid bg-primary bg-xpg">
+      <h5 class="text-xpg-light text-right p-1">&copy; Devin Biddy &nbsp;|&nbsp; 2019</h5>
+    </footer>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
