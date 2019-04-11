@@ -2605,18 +2605,6 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 
-.btn-xpg-black {
-  color: #fff;
-  background-color: #444;
-  border-color: #444;
-}
-
-.btn-xpg-black:hover {
-  color: #fff;
-  background-color: #070707;
-  border-color: #010000;
-}
-
 .btn-primary {
   color: #fff;
   background-color: #1a1a1a;
