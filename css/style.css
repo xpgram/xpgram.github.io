@@ -68,18 +68,11 @@
 }
 
 .w-xpg-l {
-  min-width: 300px;
-  max-width: 400px;
-}
-
-.w-xpg-m {
-  min-width: 250px;
-  max-width: 300px;
+  width: 450px;
 }
 
 .w-xpg-s {
-  min-width: 150px;
-  max-width: 250px;
+  width: 200px;
 }
 
 /* THIS IS SOME S*** */
@@ -105,8 +98,12 @@
 
 @media only screen and (max-width: 1300px) {
   .xpg-std-container {width: 800px;}
+  .w-xpg-l {width: 800px;}
+  .w-xpg-s {width: 800px;}
 }
 
 @media only screen and (max-width: 900px) {
   .xpg-std-container {width: 400px;}
+  .w-xpg-l {width: 400px;}
+  .w-xpg-s {width: 400px;}
 }
