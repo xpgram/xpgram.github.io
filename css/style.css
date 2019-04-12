@@ -71,6 +71,10 @@
   width: 450px;
 }
 
+.w-xpg-m {    /* This is bad practice. This is 'What I Know', the section; I should just target their IDs or something. */
+  width: 450px;
+}
+
 .w-xpg-s {
   width: 200px;
 }
@@ -98,12 +102,19 @@
 
 @media only screen and (max-width: 1300px) {
   .xpg-std-container {width: 800px;}
-  .w-xpg-l {width: 800px;}
-  .w-xpg-s {width: 800px;}
+  .w-xpg-l {
+    width: 100%;
+  }
+  .w-xpg-m {
+    width: 400px;
+    border-right: 4px solid #111;
+  }
+  .w-xpg-s {width: 400px;}
 }
 
 @media only screen and (max-width: 900px) {
-  .xpg-std-container {width: 400px;}
-  .w-xpg-l {width: 400px;}
-  .w-xpg-s {width: 400px;}
+  .xpg-std-container {width: 90%;}
+  .w-xpg-l {width: 100%;}
+  .w-xpg-m {width: 100%; border-right: none;}
+  .w-xpg-s {width: 100%;}
 }
