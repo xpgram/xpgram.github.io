@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>This is the Title</title>
+        <meta charset="UTF-8">
+
+        <style>
+            body {
+                font-family: Helvetica, sans-serif;
+            }
+
+            h1, h2, p {
+                text-align: center;
+            }
+
+            p {
+                font-size: 1.25rem;
+            }
+
+            button {
+                padding: 0.6rem 1.5rem;
+                margin: 2rem;
+                border: none;
+                border-radius: 25px;
+                font-weight: 900;
+            }
+
+            .grn-btn {
+                background-color: purple;
+                color: chartreuse;
+            }
+
+            .red-btn {
+                background-color: red;
+                color: white;
+            }
+
+            .button-box {
+                display: flex;
+                justify-content: center;
+            }
+
+            .col-left {
+                text-align: left;
+                margin-left: 5%;
+                width: 45%;
+            }
+
+            .col-right {
+                text-align: right;
+                width: 45%;
+            }
+
+            .topping-box {
+                width: 200px;
+            }
+
+            #toppings-form {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 800px;
+                margin: 0 auto;
+            }
+
+            #receipt-box {
+                width: 300px;
+                margin: 1rem auto;
+                border: 1px solid #000;
+                display: flex;
+                flex-wrap: wrap;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Old Chicago Pizza Co.</h1>
+        <h2>Hi! I live in Chicago and I have old pizzas!</h2>
+        <p>I buy pizzas from Chicagan pizza-men all the time! You can have anything I haven't eaten yet.</p>
+        <p>Use this form to request whatever and I'll go look and see what I have!</p>
+        <p>The less specific you are, the better luck you'll have!</p>
+        <p>If you want me to put anything from my kitchen on your pizza, I already have!</p>
+        <p>I provide fast shipping! (USPS expedited)</p>
+
+        <!-- I was just going off my intuition. I may want to restructure these. -->
+        <!-- (For instance, <h3> can have margins, borders, backgrounds, etc. There's no reason to put it in a <div>) -->
+        <div id="toppings-form">
+            <div class="topping-box">
+                <h3>Size</h3>
+                <form>
+                    <input id="size-p"  type="radio" name="pizza-size" value="Personal"> Personal<br>
+                    <input id="size-md" type="radio" name="pizza-size" value="Medium"> Medium<br>
+                    <input id="size-lg" type="radio" name="pizza-size" value="Large"> Large<br>
+                    <input id="size-xl" type="radio" name="pizza-size" value="Xtreme Large"> Xtreme Large<br>
+                </form>
+            </div>
+
+            <div class="topping-box">
+                <h3>Preferred Sauce</h3>
+                <form>
+                    <input id="sauce-mar" type="radio" name="pizza-sauce" value="Marinara Sauce"> Marinara<br>
+                    <input id="sauce-wht" type="radio" name="pizza-sauce" value="White Sauce"> White<br>
+                    <input id="sauce-bbq" type="radio" name="pizza-sauce" value="Barbeque Sauce"> Barbeque<br>
+                    <input id="sauce-no" type="radio" name="pizza-sauce" value="No Sauce"> Desert Dry<br>
+                </form>
+            </div>
+
+            <div class="topping-box">
+                <h3>How much cheese?</h3>
+                <form>
+                    <input id="cheese-rg" type="radio" name="pizza-cheese" value="Regular Cheese"> Regular<br>
+                    <input id="cheese-xt" type="radio" name="pizza-cheese" value="Extra Cheese"> Extra<br>
+                    <input id="cheese-no" type="radio" name="pizza-cheese" value="No Cheese"> No<br>
+                </form>
+            </div>
+
+            <div class="topping-box">
+                <h3>Crust?</h3>
+                <form>
+                    <input id="crust-pl" type="radio" name="pizza-crust" value="Plain Crust"> Plain<br>
+                    <input id="crust-gb" type="radio" name="pizza-crust" value="Garlic Butter Crust"> Garlic Butter<br>
+                    <input id="crust-st" type="radio" name="pizza-crust" value="Stuffed Crust"> Cheese Tube<br>
+                    <input id="crust-sp" type="radio" name="pizza-crust" value="Spicy Crust"> Spicy Boy&trade;<br>
+                    <input id="crust-hs" type="radio" name="pizza-crust" value="House Special"> Mystery Flavor<br>
+                </form>
+            </div>
+
+            <div class="topping-box">
+                <h3>Your Fav Tops</h3>
+                <form>
+                    <input id="mtop-pep" type="checkbox" name="pizza-mtop" value="Pepperoni"> Pepperoni<br>
+                    <input id="mtop-ssg" type="checkbox" name="pizza-mtop" value="Sausage"> Sausage<br>
+                    <input id="mtop-cab" type="checkbox" name="pizza-mtop" value="Canadian Bacon"> Canadian Bacon<br>
+                    <input id="mtop-grb" type="checkbox" name="pizza-mtop" value="Ground Beef"> Ground Beef<br>
+                    <input id="mtop-ach" type="checkbox" name="pizza-mtop" value="Anchovy"> Anchovy<br>
+                    <input id="mtop-chk" type="checkbox" name="pizza-mtop" value="Chicken"> Chicken<br>
+                </form>
+            </div>
+
+            <div class="topping-box">
+                <h3>Your Other Fav Tops</h3>
+                <form>
+                    <input id="vtop-tom" type="checkbox" name="pizza-vtop" value="Tomatoes"> Tomatoes<br>
+                    <input id="vtop-oni" type="checkbox" name="pizza-vtop" value="Onions"> Onions<br>
+                    <input id="vtop-blo" type="checkbox" name="pizza-vtop" value="Black Olives"> Black Olives<br>
+                    <input id="vtop-grp" type="checkbox" name="pizza-vtop" value="Green Peppers"> Green Peppers<br>
+                    <input id="vtop-msh" type="checkbox" name="pizza-vtop" value="Mushrooms"> Mushrums<br>
+                    <input id="vtop-pin" type="checkbox" name="pizza-vtop" value="Pineapple"> Pineapple<br>
+                    <input id="vtop-spi" type="checkbox" name="pizza-vtop" value="Spinach"> Spinach<br>
+                    <input id="vtop-jal" type="checkbox" name="pizza-vtop" value="Jalapeo"> Jalape&#9647;o<br>
+                </form>
+            </div>
+        </div>
+
+        <div class="button-box">
+            <button type="button" class="grn-btn" onclick="showReceipt()">Order</button>
+            <button type="button" class="red-btn" onclick="resetForm()">Cancel</button>
+        </div>
+
+        <!-- Receipt Spots -->
+        <div class="hideable">
+            <div id="receipt-box">
+                <h3 class="col-left">Your Order</h3>
+                <h3 class="col-right">Subtotal</h3>
+                <div id="receipt-name-col" class="col-left"></div>
+                <div id="receipt-price-col" class="col-right"></div>
+                <h4 class="col-left">Total:</h4>
+                <h4 class="col-right">$<span id="receipt-total">0.00</span></h4>
+            </div>
+        </div>
+
+        <!-- The java part that does the work -->
+        <script>
+            // Gather form data and present it to the user as an itemized receipt.
+            function showReceipt() {
+                clearReceipt();
+
+                // Establish price matrix as key/value pairs
+                let priceSizes = {'size-p': 6, 'size-md': 10, 'size-lg': 14, 'size-xl': 16};
+                    // Er, okay, just the one then
+
+                // Return values (UI)
+                let receipt = [];
+                let totalprice;
+
+                // Build receipt
+                let price;
+                let usedFreeMeat = false;
+                let usedFreeVeg = false;
+
+                let ls = document.querySelectorAll("input:checked");    // Get all user-selected elements
+
+                for (let i = 0; i < ls.length; i++) {
+                    price = 0;
+                    
+                    if (ls[i].name === "pizza-size")    // Pizza Size
+                        price = priceSizes[ls[i].id];
+
+                    else if (ls[i].id === "cheese-xt")  // Extra Cheese
+                        price = 3;
+
+                    else if (ls[i].id === "crust-st")   // Stuffed Crust
+                        price = 3;
+
+                    else if (ls[i].name === "pizza-mtop") {     // Meats
+                        price = 1;
+                        if (!usedFreeMeat) {
+                            usedFreeMeat = true;
+                            price = 0;
+                        }
+                    }
+                        
+                    else if (ls[i].name === "pizza-vtop") {     // Veggies
+                        price = 1;
+                        if (!usedFreeVeg) {
+                            usedFreeVeg = true;
+                            price = 0;
+                        }
+                    }
+
+                    receipt.push([ls[i].value, price]);     // Push name and price onto receipt
+                }
+
+                // Paste info into receipt element
+                totalprice = 0;
+                let nameCol = document.getElementById("receipt-name-col");
+                let priceCol = document.getElementById("receipt-price-col");
+                for (let i = 0; i < receipt.length; i++) {
+                    // Tally up the total of all items
+                    totalprice += receipt[i][1];
+
+                    // Paste each item into separated columns
+                    nameCol.innerHTML = nameCol.innerHTML + receipt[i][0] + "<br>";
+                    priceCol.innerHTML = priceCol.innerHTML + receipt[i][1].toFixed(2) + "<br>";
+                }
+
+                // Add total price to receipt
+                document.getElementById("receipt-total").innerHTML = totalprice.toFixed(2);
+
+                // Unhide the receipt display
+                document.getElementsByClassName("hideable")[0].hidden = false;
+            }
+
+            // Reset the global form data input by the user.
+            function resetForm() {
+                document.getElementById("size-lg").checked = true;
+                document.getElementById("sauce-mar").checked = true;
+                document.getElementById("cheese-rg").checked = true;
+                document.getElementById("crust-pl").checked = true;
+
+                let mtops = document.getElementsByName("pizza-mtop");
+                let vtops = document.getElementsByName("pizza-vtop");
+                for (let i = 0; i < mtops.length; i++) { mtops[i].checked = false; }
+                for (let i = 0; i < vtops.length; i++) { vtops[i].checked = false; }
+
+                // Receipt should be hidden
+                document.getElementsByClassName("hideable")[0].hidden = true;
+            }
+
+            // Clears the receipt of any order. Use before pasting a new one.
+            function clearReceipt() {
+                document.getElementById("receipt-name-col").innerHTML = "";
+                document.getElementById("receipt-price-col").innerHTML = "";
+                document.getElementById("receipt-total").innerHTML = "0.00";
+            }
+
+            // Set the page on load, base condition
+            resetForm();
+
+        </script>
+    </body>
+</html>
