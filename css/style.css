@@ -52,7 +52,7 @@
 }
 
 .btn-xpg {
-  width: 150px;
+  width: 160px;
 }
 
 .btn-xpg-black {
@@ -80,4 +80,19 @@
 .w-xpg-s {
   min-width: 150px;
   max-width: 250px;
+}
+
+/* THIS IS SOME S*** */
+/* THIS IS THE S*** F*** MAN */
+/* I dunno about the below. Maybe author a .ttf that doesn't suck? */
+
+@font-face {
+  font-family: 'xpgType';
+  src: url("./css/fonts/tectac.ttf");
+}
+
+.xpg-font {
+  font-family: xpgType;
+}
+
 }
