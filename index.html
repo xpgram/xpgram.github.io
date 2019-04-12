@@ -1,4 +1,42 @@
 <!doctype html>
+
+<!--
+I'm too tired and lazy to do this right now, so here are changes I want to make:
+
+ - Put a top-notch triple-A indie game in the black shit behind my logo.
+ - Also, update my logo.
+
+ - Refactor, or re-write maybe, the website to be mobile first, then expandable.
+    Point being, if 'About Me', 'What I Know' and 'Contact' are going to be in-column, they should
+    take up some standard width of screen. The same amount, all of them.
+    - The nav bar should have additional options for getting to 'Contact' etc. when the layout is smaller.
+      I can probably do that with 'display: hidden'
+ - Behind those sections, add a few lighter-gray pixel effects for pleasantness.
+    I'm thinking a pixel fog or something like that. Just add flair to the edges of the screen.
+ - Maybe add some flair to each section? Why stick with Lux, huh?
+ - Add my pixel font for the headers, too.
+
+ - Add something I'm actually proud of to 'Projects'.
+ - And some things I'm not (it's an assignment from the assignment boys)
+ - Speaking of, I guess finish the cinema jQuery/Bootstrap assignment so I can add it
+ - And... was there another one? I can't bloody remember.
+    - Oh, they had me do that pizza website thing.
+
+So, here's the thing about those, the assignments.
+Obviously I'm not proud of them. Obviously they're easy. Obviously they're not me.
+But! While I'm in the course, I think I gotta, you know?
+
+I can very easily remove them ~after~ the course is over.
+
+I even separated that line from the above paragraph for emphasis. ~Very easily.~
+Some actual projects I consider worth showing off:
+ - Get TecTac in Processing presentable? Just the source, even.
+ - Get TecTac in Javascript working.
+    - This means learn Quintus. Or whatever else.
+
+-->
+
+
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -61,70 +99,88 @@
     <!-- Info Panel -->
     <section id="info" class="container-fluid bg-primary p-3">
 
-      <div class="row">
+      <div class="xpg-std-container">
 
-        <!-- About Me Section -->
-        <div id="about" class="container-fluid w-xpg-l col-5 text-xpg-light bg-xpg-black p-3 mb-3 mx-auto">
-          <h1 class="text-xpg-light text-nowrap pb-2">About Me</h1>
-          <div class="pb-3 text-xpg-light">
-            <p>
-              I'm an indie games' developer and artist based in Oregon.
-            </p>
-            <p>
-              I've been thinking, writing, playing and designing games since I was a small-ish, young-ish boy.
-              I love games. They're maybe the only thing I love.
-            </p>
-            <p>
-              I have (hobbyist) experience working with every part of the game-design process because
-              I've been doing it alone for years.
-            </p>
-            <p>
-              I don't have much to show off <em>right now</em>. That's regrettable. I want to take my
-              career somewhere, so I'm working on fixing that. The <a href="#projects" class="text-xpg-light underline">Projects</a>
-              section below is where I'll put it.
-            </p>
-          </div>
-        </div>
+        <div class="row justify-content-between">
 
-        <!-- What I Know Section -->
-        <div id="skills" class="container-fluid w-xpg-m col-5 text-xpg-light bg-primary p-3 mb-3 mx-auto">
-          <h1 class="text-xpg-light text-nowrap pb-2">What I Know</h1>
-          <div class="pb-3 text-xpg-light">
-            <p class="mb-1">Languages</p>
-            <p>C# / Java / Python / HTML5 / CSS3</p>
-            <p class="mb-1">Tools</p>
-            <p>Visual Studio / Eclipse / Unity</p>
-          </div>
-        </div>
-
-        <!-- Contact Section -->
-        <div id="contact" class="container-fluid w-xpg-s col-3 text-xpg-light bg-primary p-3 mb-3 mx-auto">
-          <h1 class="text-xpg-light text-nowrap pb-2">Contact</h1>
-          <div class="pb-3 text-xpg-light">
-            <p><a class="link text-xpg-light text-nowrap pl-2" href="mailto:xp.gram@gmail.com" target="_blank">xp.gram@gmail.com</a></p>
-            <!-- Buttons for career/social accounts -->
-            <div class="pb-2">
-              <a class="btn btn-xpg btn-xpg-black" href="https://www.linkedin.com/in/deivn-bddiy" target="_blank" role="button">
-                LinkedIn <img src="./img/icon_extlink.png" width="14" alt="">
-              </a>
-            </div>
-            <div class="pb-2">
-              <a class="btn btn-xpg btn-xpg-black" href="https://github.com/xpgram" target="_blank" role="button">
-                github <img src="./img/icon_extlink.png" width="14" alt="">
-              </a>
+          <!-- About Me Section -->
+          <div id="about" class="container-fluid col-5 w-xpg-l text-xpg-light bg-xpg-black p-3 mb-3 mx-0">
+            <h1 class="text-xpg-light text-nowrap pb-2 xpg-font">About Me</h1>
+            <div class="pb-3 text-xpg-light">
+              <p>
+                I'm an indie games' developer and artist based in Oregon.
+              </p>
+              <p>
+                I've been thinking, writing, playing and designing games since I was a small-ish, young-ish boy.
+                I love games. They're maybe the only thing I love.
+              </p>
+              <p>
+                I have (hobbyist) experience working with every part of the game-design process because
+                I've been doing it alone for years.
+              </p>
+              <p>
+                I don't have much to show off <em>right now</em>. That's regrettable. I want to take my
+                career somewhere, so I'm working on fixing that. The <a href="#projects" class="text-xpg-light underline">Projects</a>
+                section below is where I'll put it.
+              </p>
             </div>
           </div>
+
+          <!-- What I Know Section -->
+          <div id="skills" class="container-fluid col-5 w-xpg-m text-xpg-light bg-primary p-3 mb-3 mx-0">
+            <h1 class="text-xpg-light text-nowrap pb-2">What I Know</h1>
+            <div class="pb-3 text-xpg-light">
+              <p class="mb-1">Languages</p>
+              <p>C# / Java / Javascript / Python <br>HTML5 / CSS3</p>
+              <p class="mb-1">Tools</p>
+              <p>Visual Studio / Eclipse / Unity</p>
+            </div>
+          </div>
+
+          <!-- Contact Section -->
+          <div id="contact" class="container-fluid col-3 w-xpg-s text-xpg-light bg-primary p-3 mb-3 mx-0">
+            <h1 class="text-xpg-light text-nowrap pb-2">Contact</h1>
+            <div class="pb-3 text-xpg-light">
+              <p><a class="link text-xpg-light text-nowrap pl-2" href="mailto:xp.gram@gmail.com" target="_blank">xp.gram@gmail.com</a></p>
+              <!-- Buttons for career/social accounts -->
+              <div class="pb-2">
+                <a class="btn btn-xpg btn-xpg-black" href="https://www.linkedin.com/in/deivn-bddiy" target="_blank" role="button">
+                  LinkedIn <img src="./img/icon_extlink.png" width="14" alt="">
+                </a>
+              </div>
+              <div class="pb-2">
+                <a class="btn btn-xpg btn-xpg-black" href="https://github.com/xpgram" target="_blank" role="button">
+                  github <img src="./img/icon_extlink.png" width="14" alt="">
+                </a>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-      </div>
+        <!-- Demos or pictures of my work -->
+        <div class="row">
+          <div id="projects" class="container-fluid text-xpg-light bg-xpg-black p-3 mb-3 mx-0">
+            <h1 class="text-xpg-light text-nowrap pb-2">Projects</h1>
+            <div class="pb-3 text-xpg-light">
 
-      <!-- Demos or pictures of my work -->
-      <div id="projects" class="card text-xpg-light bg-xpg-black">
-        <h1 class="card-header text-xpg-light pb-0">Projects</h1>
-        <div class="card-body">
-          <p class="card-text">Coming Soon..</p>
+              <h5 class="mb-1 text-xpg-light">Assignments from The Tech Academy:</h5>
+              <p>
+                <a class="link text-xpg-light text-nowrap" href="./TicTacToe/TicTacToe_xpg.html" target="_blank">Tic Tac Toe with HTML <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+                <a class="link text-xpg-light text-nowrap" href="#" target="_blank">Cinema Showtimes with Bootstrap <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+                <a class="link text-xpg-light text-nowrap" href="#" target="_blank">Pizza Order Form <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+              </p>
+
+              <br> <!-- Subsection Break -->
+              
+              <h5 class="mb-1 text-xpg-light">The Rest:</h5>
+              <p>Coming Soon..</p>
+
+            </div>
+          </div>
         </div>
-      </div>
+
+      </div> <!-- /Info Section Container -->
 
     </section>
 

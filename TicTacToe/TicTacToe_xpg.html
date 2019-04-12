@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+ 	<head>
+	    <title>TicTac 4x4 3-in-a-row</title>
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<link rel="stylesheet" href="./css/game_xpg.css">
+	</head>
+
+	<body id="body">
+
+		<!-- Audio Components -->
+		<audio id="placeAvatar">
+			<source src="./audio/placeAvatar.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		<audio id="winGame">
+			<source src="./audio/winGame.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		<audio id="tieGame">
+			<source src="./audio/tieGame.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		<audio id="diceRoll">
+			<source src="./audio/diceRoll.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+
+		<!-- Shell holds all relevant page elements. Concerning the game, anyway. I think. -->
+		<div id="shell">
+			<div id="gameMsgBox" onclick="hideGameMsg()"><p id="gameMsg"></p></div>
+
+			<!-- Game Board, Left-Side Control Panel -->
+			<div class="console">
+				<div class="displaybox box-left">
+					<strong>Current Config:</strong><br><br>
+					<label>Player 1: &nbsp;&nbsp;<span id="p1Display">X</span></label><br>
+					<label>Player 2: &nbsp;&nbsp;<span id="p2Display">O</span></label><br>
+				</div>
+				<div id="boardState"></div>		<!-- What does this do? TODO: Remove -->
+				<div class="controls">
+					<button id="btnStart" onclick="startGame()">Start Game</button>
+					<div id="messageFrame">
+						<p id="showHeader">ACTIVE PLAYER</p>
+						<p id="showPlayer">Game Stopped</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- This is the tix tax tox board. -->
+			<table>
+				<tr>
+					<td>
+						<div class="photo-container">
+							<div id="sq0" class="square" onclick="squareAnimate(0)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq1" class="square" onclick="squareAnimate(1)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq2" class="square" onclick="squareAnimate(2)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq3" class="square" onclick="squareAnimate(3)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="photo-container">
+							<div id="sq4" class="square" onclick="squareAnimate(4)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq5" class="square" onclick="squareAnimate(5)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq6" class="square" onclick="squareAnimate(6)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq7" class="square" onclick="squareAnimate(7)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="photo-container">
+							<div id="sq8" class="square" onclick="squareAnimate(8)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq9" class="square" onclick="squareAnimate(9)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq10" class="square" onclick="squareAnimate(10)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq11" class="square" onclick="squareAnimate(11)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="photo-container">
+							<div id="sq12" class="square" onclick="squareAnimate(12)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq13" class="square" onclick="squareAnimate(13)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq14" class="square" onclick="squareAnimate(14)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="photo-container">
+							<div id="sq15" class="square" onclick="squareAnimate(15)">
+								<div class="O"></div>
+								<div class="X"></div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<!-- End of tix tax tox board. -->
+
+			<!-- Game Board, Right-Side Control Panel -->
+			<div class="console">
+				<div class="displaybox box-right">
+					<strong>Configuration:</strong><br><br>
+					<label>Player 1 is X </label><input type="radio" id="radio-p1x" name="player-select" value="" checked>
+					<label>Player 2 is X </label><input type="radio" id="radio-p2x" name="player-select" value="">
+					<button onclick="saveSettings()">Save Config</button>
+				</div>
+				<div class="controls">
+					<button id="btnStop" onclick="stopGame()">Stop Game</button>
+				</div>
+			</div>
+
+		</div> <!-- End of class=shell -->
+
+		<p id="test_log"></p>
+
+		<!-- Game Script(s) -->
+		<!-- <script src="./js/onload.js"></script> -->
+		<script src="./js/tictactow4x4.js"></script>
+
+	</body>
+</html>
