@@ -103,10 +103,10 @@
 /* ======================================================== */
 /*    Media Breaks                                          */
 
-@media only screen and (max-width: 1199px) {
+@media only screen and (max-width: 1300px) {
   .xpg-std-container {width: 800px;}
 }
 
-@media only screen and (max-width: 799px) {
+@media only screen and (max-width: 900px) {
   .xpg-std-container {width: 400px;}
 }
