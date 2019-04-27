@@ -19,6 +19,12 @@
   color: #CCC;
 }
 
+.xpg-project-desc {
+  font-size: 0.85rem;
+  padding-left: 30px;
+  font-style: oblique;
+}
+
 .bg-xpg {
   background-image: url('../img/ff6_test.png');
   background-size: cover;
