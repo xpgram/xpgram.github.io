@@ -1,0 +1,259 @@
+html, body {
+    height: 100%;
+    margin: 0px;
+    background-color: #7777DD;
+}
+
+.container {
+    width: 100%;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.navtitle {
+    font-size: 30px;
+    color: #FFA020;
+}
+
+nav {
+    float: right;
+    padding-right: 40px;
+}
+
+nav a {
+    font-size: 16px;
+    color: #FFA020;
+}
+
+h1 {
+    font-size: 150px;
+    text-align: center;
+    color: #FFA020;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+h2 {
+    font-size: 60px;
+}
+
+h3 {
+    font-size: 26px;
+    margin: 20px 0px;
+    color: #FFA080;
+    text-align: center;
+    padding: 0;
+    font-weight: normal;
+}
+
+hr {
+    width: 90%;
+    margin: 0% 5%;
+    border: none;
+    border-top: 1px solid #FFA020;
+}
+
+p {
+    max-width: 80%;
+    margin: 10px auto;
+    font-size: 20px;
+    text-align: center;
+    color: #FFA080;
+    padding: 0;
+}
+
+p.spacer {
+    width: 100%;
+    height: 50px;
+}
+
+p.letter-style {
+    width: 50%;
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 0;
+    border: 0;
+    text-align: justify;
+}
+
+p.letter-style-small {
+    font-size: 16px;
+    width: 50%;
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 0;
+    border: 0;
+    text-align: justify;
+}
+
+ul {
+    font-size: 20px;
+    color: #FFA080;
+    margin: 0% auto;
+    padding-left: 20px;
+    width: 45%;
+    max-width: 550px;
+    text-align: left;
+}
+
+blockquote {
+    font-size: 20px;
+    width: 46%;
+    max-width: 500px;
+    margin: 15px auto;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-left: 1px solid #FFA020;
+    color: #FFA080;
+}
+
+blockquote p {
+    font-style: oblique;
+    text-align: justify;
+    max-width: 100%;
+    
+}
+
+blockquote p.quote-title {
+    text-align: left;
+    padding-left: 25px;
+}
+
+blockquote p.quote-credit {
+    text-align: right;
+}
+
+#header {
+    height: 40px;
+    width: 100%;
+    padding: 8px 16px;
+    background-color: #333377;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-color: #FFA020;
+}
+
+#info {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    margin-top: 0px;
+}
+
+#info p {
+    font-family: "Helvetica Neue", sans-serif;
+}
+
+#signup {
+    width: 100%;
+}
+
+#complaints {
+    width: 100%;
+}
+
+#contact {
+    height: 120px;
+    background-color: #333377;
+    border-top-style: solid;
+    border-top-color: #FFA020;
+}
+
+.form-label {
+    display: inline-block;
+    width: 275px;
+    margin-left: 50px;
+    margin-right: 0;
+    margin-top: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.note {
+    font-size: 16px;
+}
+
+.form-element {
+    width: 600px;
+    margin: 0 auto;
+}
+
+input {
+    width: 200px;
+    height: 20px;
+    margin: 0;
+    margin-top: 10px;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid #464683;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 #000;
+}
+
+input[type="submit"] {
+    width: 100px;
+    height: 30px;
+    margin-left: 9%;
+    color: #5555BB;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 25px;
+}
+
+input[type="submit"]:hover {
+    border-color: #448;
+    box-shadow: 0 0 3px 0 #AAF;
+}
+
+form {
+    width: 100px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+input.radio-button {
+    width: 20px;
+}
+
+.radio-button-text {
+    font-size: 16px;
+    vertical-align: bottom;
+    text-align: left;
+    margin: 0;
+    display: inline-block;
+}
+
+.angrybox {
+    display: block;
+    height: 100px;
+    width: 80%;
+    margin: 25px 10%;
+    font-size: 20px;
+    color: #FFA080;
+}
+
+input.angrybox-submit {
+    margin-left: 80%;
+}
+
+.angrybox-submit {
+    width: 10%;
+    margin: 0 10% 25px 0;
+}
+
+img {
+    display: inline-block;
+    margin: 0;
+}
+
+.imgunderline {
+    width: 812px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p.tiny {
+    font-size: 12px;
+}
