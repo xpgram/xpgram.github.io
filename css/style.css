@@ -11,6 +11,13 @@
   box-shadow: inset 1px 4px 12px -6px #000D;
 }
 
+#logo {
+  max-width: 32px;
+  max-height: 38px;
+  width: auto;
+  height: auto;
+}
+
 .text-xpg {
   color: #d3739e;
 }
@@ -37,8 +44,8 @@
 }
 
 .img-db {
-  max-width: 400px;
-  width: 40%;
+  max-width: 900px;
+  width: 70%;
 }
 
 .img-db-bitshift {
