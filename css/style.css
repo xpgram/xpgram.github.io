@@ -3,6 +3,16 @@
   height: 90vh;
 }
 
+#frame { /* Specifically for any Pixi.js renderings */
+  position: absolute;
+  overflow: hidden;
+
+  width: 960px;
+  height: 640px;
+  /* This is the GBA ratio. */
+  /* Figure some way to keep this aspect ratio while resizing the game. */
+}
+
 #info {
   box-shadow: 0 0 5px 2px #A15481;
 }
