@@ -11,7 +11,7 @@ var scaleFactor;                    // Width only; I am assuming aspect ratio wi
 
 
 // Create Pixi application
-const app = new PIXI.Application();
+const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.querySelector('#frame').appendChild(app.view); // Add the canvas Pixi created to the HTML document.
 
 // Global references
@@ -50,14 +50,28 @@ function moveObject(object, x, y) {
 
 
 // Create a grid of bg tiles
-//const tr_sand = PIXI.Texture.from('./src/assets/sprites/sand.png');
-app.loader.add('sand', './src/assets/sprites/sand.png').load((loader, resources) => {
+app.loader.add('sand', './src/assets/sprites/sand.png');
+app.loader.add('TecTacRegular', './src/assets/TecTacRegular.xml');
+app.loader.load((loader, resources) => {
     for (let i = 0; i < (150); i++) {
         const sand = new PIXI.Sprite(resources.sand.texture);
         sand.x = (i % 15) * 16;
         sand.y = Math.floor(i / 15) * 16;
         scene.addChild(sand);
     }
+
+    const graphics = new PIXI.Graphics();
+    graphics.beginFill(0xBCA474);
+    graphics.drawRect(12,12,84,60);     // 12,12 puts the box at 8,8, by the way.
+    graphics.drawRect(12,84,198,34);    // I'm sure this has something to do with scaling... maybe.
+    graphics.endFill();
+    scene.addChild(graphics);
+
+    const bitmapFontText = new PIXI.BitmapText("Select an option:\n1. Dairy\n2. Big Boi\n3. @gmail.com\n4. #5 $1,700\n5. d&d or DnD\n\n\nThis typeface is a little hard to read.\nSome of that is how clumped the pixels are.\nI dunno. I'll fix it later.", { font: '8px TecTacRegular', align: 'left'});
+    bitmapFontText.x = 16;
+    bitmapFontText.y = 16;
+    
+    scene.addChild(bitmapFontText);
 });
 
 // Why?
@@ -66,8 +80,6 @@ scene.position.y = -16;
 
 // It's like there's padding or something; when width is adjustable, the top left corner does not stay put.
 // Otherwise, 'scene' is exactly what I want it to be.
-
-
 
 // All right, this was a good first exercise.
 // I am gonna sleep a little teensy.
