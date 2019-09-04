@@ -5,6 +5,7 @@ export class Battle {
     game;                   // Reference to the global game object.
 
     scrollingText;
+    point = new PIXI.Point();
 
     // Accepts a reference to the global game instance.
     constructor(game) {
@@ -42,8 +43,8 @@ export class Battle {
 
         // Creates a text object with my imported bitmap font.
         this.scrollingText = new PIXI.BitmapText(this.msgContent, { font: '8px TecTacRegular', align: 'left'});
-        this.scrollingText.x = 32;
-        this.scrollingText.y = 120;
+        this.scrollingText.x = this.point.x = 32;
+        this.scrollingText.y = this.point.y = 120;
         this.scrollingText.letterSpacing = 0;
         this.scrollingText.alpha = 0.95;
         for (let i = 0; i < this.scrollingText.children.length; i++)
@@ -65,7 +66,8 @@ export class Battle {
 
     // Main program logic — the part that runs itself.
     update(delta) {
-        this.scrollingText.y -= 0.05 * delta;
+        this.point.y -= 0.05 * delta;
+        this.scrollingText.y = Math.floor(this.point.y);
     }
 
     // Used to close data structures or invisible things maybe.
