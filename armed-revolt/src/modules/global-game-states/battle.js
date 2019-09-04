@@ -49,7 +49,6 @@ export class Battle {
         this.scrollingText.alpha = 0.95;
         for (let i = 0; i < this.scrollingText.children.length; i++)
             this.scrollingText.children[i].blendMode = PIXI.BLEND_MODES.SCREEN;
-        //scrollingText.blendMode = PIXI.BLEND_MODES.SCREEN;
         this.game.app.stage.addChild(this.scrollingText);
 
         // Creates a mask to emulate FFI-style stuff
@@ -66,7 +65,7 @@ export class Battle {
 
     // Main program logic — the part that runs itself.
     update(delta) {
-        this.point.y -= 0.05 * delta;
+        this.point.y -= 0.08 * delta;
         this.scrollingText.y = Math.floor(this.point.y);
     }
 
