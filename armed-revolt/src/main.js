@@ -1,5 +1,5 @@
 
-import {Battle as BattleState} from './modules/global-game-states/battle.js';
+import {Battle as BattleState} from './scenes/battle.js';
 
 // Pixi engine settings
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;                // Gives us that pixel-y look.
@@ -71,5 +71,5 @@ class Game {
     }
 }
 
-// Uh, nice watch. Run it.
+// See a boy at the light like: "Run it."
 new Game().init();
