@@ -1,4 +1,4 @@
-import {LowResTransform as Transform} from "/src/scripts/LowResTransform.js";
+import { LowResTransform as Transform } from "../scripts/LowResTransform.js";
 
 export class Battle {
     mustInitialize = true;  // Signals the game skeleton that this state needs to initalize before use.
