@@ -2923,7 +2923,7 @@
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "normal-map-tiles.png",
+	"image": "normal-map-tiles-sm.png",
 	"format": "RGBA8888",
 	"size": {"w":923,"h":127},
 	"scale": "1"

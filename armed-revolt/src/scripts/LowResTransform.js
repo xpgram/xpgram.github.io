@@ -1,3 +1,4 @@
+//@ts-check
 
 /**
 This class represents the translational, rotational and proportional transform of a
@@ -13,24 +14,45 @@ to the Pixi object it's supposed to be controlling.
 Keep in mind, this class cannot block access to a Pixi object's transform values;
 doing so would obstruct other properties that are beyond the scope of this class.
 
-TODO ((objectWrap) => { return { ... objectWrap() ... }})(() => this.object);
-This feels... extremely weird to me.
-But I guess it makes sense.
-
 @author Dei Valko
-@version 0.1.0
+@version 0.1.1
+*/
+
+/*
+    Todo list unspecific to this particular class:
+
+    app.stage.set.layer
+    Terrain.Tile needs a deconstructor to remove sprites from the stage
+    Camera will move the set around, stage will scale itself according to window size (as it does)
+  ✓ Transform needs to accept an empty focus (when setting x,y properties too! Don't call updateObject or otherwise when it's empty!)
+    Terrain.Tile should also have default, empty values when nothing is passed in (probably easy).
+    Terrain.Tile gets added to Map.Tiles, Terrain.Tile.Sprite gets added to app.stage.set.layer
+    Terrain.Tile should have a read-only serialNumber for file IO. Python can write this.
+    This serialNumber is passed in to Map as a mapfile, which is converted to a 2D array of Terrain.Types
+    Map has a width and a list of tiles (height is inferred)
+    Map iterates through its list of types, creates a new Terrain.Tile by passing in position and neighbors, and pushes the result to its 1D list of tiles.
+    Map should complain if width*rows != total tiles
+    Map.height = rows
+    Once created, Map can discard its list of types, just keeping its tiles.
+    Map (maybe called Board?) keeps track of units too.
+    All in one place means all easily serializeable (I think).
+    I mean, Board.tiles Board.units, that's you're entire game right there.
 */
 
 // Constants
 const NaN_Error_Msg = "Cannot assign NaN to transform property.";
-const NaSprite_Error_Msg = "Sprite property assignment must be a PIXI.Sprite object.";  // Deprecated (useless)
 const floor = Math.floor;
 const trunc = Math.trunc;
 
 export class LowResTransform {
 
-    constructor(object) {
-        this.object = object;
+    /**
+     * @param {PIXI.Object} object 
+     * @param {PIXI.Point} pos 
+     */
+    constructor(object = null, pos = null) {
+        if (pos instanceof PIXI.Point) this.position = pos;
+        this.object = object || null;
     }
 
     /**
@@ -43,6 +65,7 @@ export class LowResTransform {
     set object(obj) {
         this._object = obj;
         this._updateObjectTransform();
+        // TODO Apply a filter to PIXI.Sprite objects which mimic low-res pixel interpolation (nearest neighbor).
     }
     _object;
 
@@ -51,21 +74,48 @@ export class LowResTransform {
      * Used once only when a new object is assigned.
      */
     _updateObjectTransform() {
-        let s = this._object;
-        s.x = floor(this.x);
-        s.y = floor(this.y);
-        s.z = floor(this.z);
-        s.rotation = this.rotation;
-        s.scale.x = this.scale.x;
-        s.scale.y = this.scale.y;
-        s.scale.width = floor(s.scale.width);   // Confines the transform to a nice, round pixel-block size.
-        s.scale.height = floor(s.scale.height); // Does not force low-res interpolation, however.
+        this._updateObjectPosition();
+        this._updateObjectRotation();
+        this._updateObjectScale();
+    }
+    _updateObjectPosition() {
+        if (this.object == null)
+            return;
+        this.object.x = floor(this.position.x);
+        this.object.y = floor(this.position.y);
+        this.object.zIndex = floor(this.position.z);
+    }
+    _updateObjectRotation() {
+        if (this.object == null)
+            return;
+        this.object.rotation = this.rotation;
+    }
+    _updateObjectScale() {
+        if (this.object == null)
+            return;
+        this.object.scale.x = this.scale.x;
+        this.object.scale.y = this.scale.y;
+        this.object.scale.width = floor(this.object.scale.width);   // Confines the transform to a nice, rounded-integer, pixel-block size.
+        this.object.scale.height = floor(this.object.scale.height); // Does not force low-res image interpolation, however.
+                                                                    // And now that I think about it, this only forces screen-pixel alignment anyway. Right?
+    }
+
+    /**
+     * @param {LowResTransform} transform The LowResTransform object to copy properties from. Ignores the focused object.
+     */
+    copy(transform) {
+        let p = transform.position;
+        this.position.set(p.x, p.y, p.z);
+
+        this.rotation = transform.rotation;
+
+        let s = transform.scale;
+        this.scale.set(s.x, s.y);
     }
 
     /**
      * A point which represents the translational transformation.
-     * Accepts PIXI.Point through assignment.
-     * @type {LowResTransform.position}
+     * @type {PIXI.Point}
      */
     get position() {
         return this._position;
@@ -74,7 +124,7 @@ export class LowResTransform {
         if (obj instanceof PIXI.Point)
             this.position.set(obj.x, obj.y);
     }
-    _position = ((objectWrap) => { return {
+    _position = ((parent) => { return {
         _x: 0,  // x-coordinate
         _y: 0,  // y-coordinate
         _z: 0,  // z-coordinate (adjusts object's z-index)
@@ -104,20 +154,20 @@ export class LowResTransform {
         set x(val) {
             if (isNaN(val))
                 throw NaN_Error_Msg;
-            this._x = val;                  // Maintain precision,
-            objectWrap().x = floor(this._x); // but don't display it.
+            this._x = val;
+            parent._updateObjectPosition();
         },
         set y(val) {
             if (isNaN(val))
                 throw NaN_Error_Msg;
             this._y = val;
-            objectWrap().y = floor(this._y);
+            parent._updateObjectPosition();
         },
         set z(val) {
             if (isNaN(val))
                 throw NaN_Error_Msg;
             this._z = val;
-            objectWrap().zIndex = floor(this._z);
+            parent._updateObjectPosition();
         },
         
         /**
@@ -127,9 +177,10 @@ export class LowResTransform {
          * @param {number} z The object's new z-coordinate (adjusts z-index). Defaults to self.
          */
         set(x, y, z) {
-            this.x = x || this._x;   // Use the setter methods
-            this.y = y || this._y;
-            this.z = z || this._z;
+            this._x = x || this._x;
+            this._y = y || this._y;
+            this._z = z || this._z;
+            parent._updateObjectPosition();
         },
 
         /**
@@ -139,11 +190,12 @@ export class LowResTransform {
          * @param {number} z The value to apply to the object's z-coordinate (adjusts z-index). Defaults to 0.
          */
         move(x, y, z) {
-            this.x += x || 0;   // Use the setter methods
-            this.y += y || 0;
-            this.z += z || 0;
+            this._x += x || 0;
+            this._y += y || 0;
+            this._z += z || 0;
+            parent._updateObjectPosition();
         },
-    }})(() => this.object); // Wraps the by-reference object in a callable function so it's always up-to-date.
+    }})(this);  // 'this' passed in as this object's parent object.
 
     /**
      * The rotational transformation of the object, expressed in radians.
@@ -155,19 +207,19 @@ export class LowResTransform {
     set rotation(val) {
         if (isNaN(val))
             throw NaN_Error_Msg;
-        this._rotation = this.object.rotation = val;
+        this._rotation = val;
+        this._updateObjectRotation();
     }
-    _rotation = 0;  // This is only saved to retain rotation between objects during reassignment.
+    _rotation = 0;
     
     /**
      * A 2D vector which represents the proportional transformation of the object.
-     * @type {LowResTransform.scale}
      */
     get scale() {
         return this._scale;
     }
-    _scale = ((objectWrap) => { return {
-        _x: 1,  // These are only saved to retain scale between objects during reassignment.
+    _scale = ((parent) => { return {
+        _x: 1,
         _y: 1,
 
         /**
@@ -190,14 +242,14 @@ export class LowResTransform {
         set x(val) {
             if (isNaN(val))
                 throw NaN_Error_Msg;
-            this._x = objectWrap().scale.x = val;           // Scale setting.
-            objectWrap().width = trunc(objectWrap().width);  // Pixel correction (sorta; bounding edges only).
+            this._x = val;
+            parent._updateObjectScale();
         },
         set y(val) {
             if (isNaN(val))
                 throw NaN_Error_Msg;
-            this._y = objectWrap().scale.y = val;
-            objectWrap().height = trunc(objectWrap().height);
+            this._y = val;
+            parent._updateObjectScale();
         },
 
         /**
@@ -206,8 +258,9 @@ export class LowResTransform {
          * @param {number} y Vertical size ratio. Defaults to self.
          */
         set(x, y) {
-            this.x = x || this.x;
-            this.y = y || this.y;
+            this._x = x || this.x;
+            this._y = y || this.y;
+            parent._updateObjectScale();
         },
-    }})(() => this.object); // Wraps the by-reference object in a callable function so it's always up-to-date.
+    }})(this);  // 'this' passed in as this object's parent object.
 }

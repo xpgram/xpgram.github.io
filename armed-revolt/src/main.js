@@ -4,7 +4,7 @@ import {Battle as BattleState} from './scenes/battle.js';
 // Pixi engine settings
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;                // Gives us that pixel-y look.
 
-class Game {
+class GameInstance {
 
     display = {
         standardLength: 16,    // I have no idea if this will ever be useful. Prolly not.
@@ -72,4 +72,10 @@ class Game {
 }
 
 // See a boy at the light like: "Run it."
-new Game().init();
+var game = new GameInstance();
+game.init();
+
+/**
+ * A singleton-like reference to our game instance.
+ */
+export function Game() { return game; }
