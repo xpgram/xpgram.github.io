@@ -4,6 +4,7 @@ import { Terrain } from "./Terrain.js";
 import { Square } from "./Square.js";
 import { ProximityBox } from "../ProximityBox.js";
 import { LowResTransform } from "../LowResTransform.js";
+import { MapLayers } from "./MapLayers.js";
 
 // Error Messages
 function InvalidLocationError(loc) {
@@ -17,6 +18,7 @@ function InvalidLocationError(loc) {
  */
 export class Map {
     _board; // 2D Dictionary (speedy) representing the grid of tiles and map entities.
+    _layers;
 
     /**
      * 
@@ -24,6 +26,9 @@ export class Map {
      * @param {number} height 
      */
     constructor(width, height) {
+        this._layers = MapLayers;
+        this._layers.init();
+
         this._initMap(width, height);
         this._generateMap();    // Generates a pleasant-looking map.
         this._setupMap();       // Perliminary setup for things like sea-tiles knowing they're shallow.
@@ -55,30 +60,38 @@ export class Map {
     _generateMap() {
         for (let x = 0; x < this.width; x++)
         for (let y = 0; y < this.height; y++) {
-            let ratio = 0.1;
+            let newType = Terrain.Sea;
+            let ratio = 0.2;
             let loc = new PIXI.Point(x,y);
-
-            loc.y--;
-            if (this.validPoint(loc) &&
-                this.get(loc).terrain.type == Terrain.Plain)
-                ratio += 0.1;
-            loc.x--; loc.y++;
-            if (this.validPoint(loc) &&
-                this.get(loc).terrain.type == Terrain.Plain)
-                ratio += 0.1;
-            loc.y--;
-            if (this.validPoint(loc) &&
-                this.get(loc).terrain.type == Terrain.Plain)
-                ratio += 0.1;
 
             let transform = new LowResTransform();
             transform.position.x = x*16;        // ← Why am I doing this? Just pass in a Point().
             transform.position.y = y*16;
 
-            if (Math.random() < ratio)
-                this._board[x][y].terrain = new Terrain.Plain(transform);
-            else
-                this._board[x][y].terrain = new Terrain.Sea(transform);
+            loc.y--;
+            if (this.validPoint(loc) &&
+                this.get(loc).terrain.type != Terrain.Sea)
+                ratio += 0.25;
+            loc.x--; loc.y++;
+            if (this.validPoint(loc) &&
+                this.get(loc).terrain.type != Terrain.Sea)
+                ratio += 0.25;
+            loc.y--;
+            if (this.validPoint(loc) &&
+                this.get(loc).terrain.type != Terrain.Sea)
+                ratio += 0.15;
+
+            if (Math.random() < ratio) {
+                let n = Math.random();
+                if (n < .4)
+                    newType = Terrain.Plain;
+                else if (n < 0.7)
+                    newType = Terrain.Wood;
+                else
+                    newType = Terrain.Mountain;
+            }
+
+            this._board[x][y].terrain = new newType(transform);
         }
     }
 
@@ -101,7 +114,7 @@ export class Map {
                 }
 
                 for (let i = 0; i < neighborList.length; i++) {
-                    if (neighborList[i].type == Terrain.Plain)
+                    if (neighborList[i].landTile)
                         this.get(loc).terrain.shallowWaters = true;
                 }
             }

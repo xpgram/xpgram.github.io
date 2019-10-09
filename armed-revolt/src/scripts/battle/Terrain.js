@@ -5,6 +5,7 @@ import { LowResTransform } from "../LowResTransform.js";
 import { Common } from "../Common.js";
 import { Game } from "../../main.js";
 import { ProximityBox } from "../ProximityBox.js";
+import { MapLayers } from "./MapLayers.js";
 
 /**
  * Terrain objects represent land and sea tiles on the map.  
@@ -95,13 +96,14 @@ export var Terrain = {
         constructor (pos) {
             this._transform = pos;
             this._transform.object = this._sprite;  // all three layers to share the same location.
+            MapLayers['base'].addChild(this._sprite);
         }
 
         /**
          * Removes associated objects from containers and breaks references to allow the garbage collector to do its job.
          */
         destoy() {
-            Game().app.stage.removeChild(this._sprite);
+            MapLayers['base'].removeChild(this._sprite);
             // If this has a reference to its transform, but no object has a reference to this, will the GC still collect this and the transform?
         }
 
@@ -124,11 +126,8 @@ export var Terrain = {
             I should assert that transform.object actually gets filled.
             */
 
-            let n = (Math.random() < 0.2) ? Math.floor(Math.random()*6)+1 : 0;
+            let n = (Math.random() < 0.3) ? Math.floor(Math.random()*6)+1 : 0;
             this._sprite.texture = new PIXI.Texture.from('plain-'+n+'.png');
-
-            // I'm testing right now; this (below) should not be here.
-            Game().app.stage.addChild(this._sprite);
         }
     },
 
@@ -178,7 +177,7 @@ export var Terrain = {
             this._container.addChild(this._layer2);
 
             // Add to screen and link transform.
-            Game().app.stage.addChild(this._container);
+            MapLayers['base'].addChild(this._container);
             this._transform.object = this._container;
         }
 
@@ -220,20 +219,142 @@ export var Terrain = {
 
             // Pick the right sea-land border overlay
             let u = 0, r = 0, d = 0, l = 0;
-            if (neighbors.up.type === Terrain.Plain) u = 1;
-            if (neighbors.down.type === Terrain.Plain) d = 1;
-            if (neighbors.left.type === Terrain.Plain) l = 1;
-            if (neighbors.right.type === Terrain.Plain) r = 1;
+            if (neighbors.up.landTile) u = 1;
+            if (neighbors.down.landTile) d = 1;
+            if (neighbors.left.landTile) l = 1;
+            if (neighbors.right.landTile) r = 1;
 
-            if (neighbors.upleft.type === Terrain.Plain && l == 0 && u != 1) l = 2;
-            if (neighbors.upright.type === Terrain.Plain && u == 0 && r != 1) u = 2;
-            if (neighbors.downleft.type === Terrain.Plain && d == 0 && l != 1) d = 2;
-            if (neighbors.downright.type === Terrain.Plain && r == 0 && d != 1) r = 2;
+            if (neighbors.upleft.landTile && l == 0 && u != 1) l = 2;
+            if (neighbors.upright.landTile && u == 0 && r != 1) u = 2;
+            if (neighbors.downleft.landTile && d == 0 && l != 1) d = 2;
+            if (neighbors.downright.landTile && r == 0 && d != 1) r = 2;
 
             let n = `${u}${r}${d}${l}`;
 
             if (n != "0000")
                 this._layer2.texture = new PIXI.Texture.from('sea-cliff-'+n+'.png');
+        }
+    },
+
+    Wood: class WoodTile {
+        _layer0 = new PIXI.Sprite();
+        _layer1 = new PIXI.Sprite();
+        _container = new PIXI.Container();
+
+        /**
+         * @type {LowResTransform}
+         */
+        get transform() { return this._transform; }
+        set transform(obj) {
+            if (obj instanceof LowResTransform)
+                this._transform.copy(obj);
+        }
+        _transform;
+
+        get type() { return WoodTile; }
+        get landTile() { return true; }
+        get shallowWaters() { return true; }
+
+        /**
+         * @param {LowResTransform} pos The position on-map (in pixels) this tile object should occupy.
+         */
+        constructor (pos) {
+            this._transform = pos;
+            //this._transform.object = this._container;
+            this._transform.object = this._layer0;
+            this._transform.object = this._layer1;
+
+            MapLayers['base'].addChild(this._layer0);
+            MapLayers['surface'].addChild(this._layer1);
+        }
+
+        /**
+         * Removes associated objects from containers and breaks references to allow the garbage collector to do its job.
+         */
+        destoy() {
+            Game().app.stage.removeChild(this._container);
+            this._transform.destroy();
+            this._layer0.destroy();
+            this._layer1.destroy();
+            this._container.destroy();  // I think I can just destroy(true) or something to break the container and its children
+        }
+
+        /**
+         * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
+         */
+        updateShape (neighbors) {
+            this._layer0.texture = new PIXI.Texture.from('plain-0.png');
+
+            let l = (neighbors.left.type == Terrain.Wood) ? 1 : 0;
+            let r = (neighbors.right.type == Terrain.Wood) ? 1 : 0;
+            this._layer1.texture = new PIXI.Texture.from(`wood-${l}${r}.png`);
+        }
+    },
+
+    Mountain: class MountainTile {
+        _layer0 = new PIXI.Sprite();
+        _layer1 = new PIXI.Sprite();
+        _layer2 = new PIXI.Sprite();
+        _container = new PIXI.Container();
+
+        /**
+         * @type {LowResTransform}
+         */
+        get transform() { return this._transform; }
+        set transform(obj) {
+            if (obj instanceof LowResTransform)
+                this._transform.copy(obj);
+        }
+        _transform;
+
+        get type() { return MountainTile; }
+        get landTile() { return true; }
+        get shallowWaters() { return true; }
+
+        /**
+         * @param {LowResTransform} pos The position on-map (in pixels) this tile object should occupy.
+         */
+        constructor (pos) {
+            this._layer1.anchor.y = 0.5;
+
+            this._container.addChild(this._layer0);
+            this._container.addChild(this._layer1);
+            this._container.addChild(this._layer2);
+
+            this._transform = pos;
+            this._transform.object = this._layer0;  // Right... objects can only be child of one thing.
+            this._transform.object = this._layer1;  // I'll need to figure out how to share transforms then—some way besides pixi containers.
+            this._transform.object = this._layer2;  // I think I can get LowResTransform to accept a list of targets.
+
+            MapLayers['base'].addChild(this._layer0);
+            MapLayers['surface'].addChild(this._layer1);
+            MapLayers['surface effects'].addChild(this._layer2);
+        }
+
+        /**
+         * Removes associated objects from containers and breaks references to allow the garbage collector to do its job.
+         */
+        destoy() {
+            Game().app.stage.removeChild(this._container);
+            this._transform.destroy();
+            this._layer0.destroy();
+            this._layer1.destroy();
+            this._layer2.destroy();
+            // If this has a reference to its transform, but no object has a reference to this, will the GC still collect this and the transform?
+        }
+
+        /**
+         * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
+         */
+        updateShape (neighbors) {
+            this._layer0.texture = new PIXI.Texture.from('plain-0.png');
+
+            let l = (neighbors.left.type == Terrain.Mountain) ? 1 : 0;
+            let r = (neighbors.right.type == Terrain.Mountain) ? 1 : 0;
+            this._layer1.texture = new PIXI.Texture.from(`mountain-${l}${r}.png`);
+
+            this._layer2.texture = new PIXI.Texture.from('shadow.png');
+            this._layer2.alpha = 0.25;
         }
     },
 }
