@@ -1,5 +1,7 @@
+//@ts-check
+
 import { LowResTransform as Transform } from "../scripts/LowResTransform.js";
-import { Terrain } from "../scripts/battle/Terrain.js";
+import { Map } from "../scripts/battle/Map.js";
 
 export class Battle {
     mustInitialize = true;  // Signals the game skeleton that this state needs to initalize before use.
@@ -38,43 +40,8 @@ export class Battle {
             // Testing the boys out
             let sheet = this.game.app.loader.resources['NormalMapTilesheet'].spritesheet;
 
-            let tilesList = [];
-            let mapWidth = 15;  // In tiles
-            let tileWidth = 16; // In pixels
-            let ratio = 0.2;
-
-            // Places a grid of plain and sea tiles on a "map".
-            for (let i = 0; i < 150; i++) {
-                if (i > mapWidth)
-                    if (tilesList[i-mapWidth] == Terrain.Plain ||
-                        tilesList[i-1] == Terrain.Plain)
-                        ratio = 0.4;
-                    else if (tilesList[i-mapWidth-1] == Terrain.Plain)
-                        ratio = 0.2;
-                    else
-                        ratio = 0.1;
-
-                if (Math.random() < ratio) {
-                    tilesList.push(Terrain.Plain);
-                }
-                else {
-                    tilesList.push(Terrain.Sea);
-                }
-            }
-
-            // Instantiates all tiles.
-            for (let i = 0; i < 150; i++) {
-                let transform = new Transform();
-                transform.position.x = (i % mapWidth) * tileWidth;
-                transform.position.y = Math.floor(i / mapWidth) * tileWidth;
-
-                let neighborIdx = [i-mapWidth-1, i-mapWidth, i-mapWidth+1, i-1, i, i+1, i+mapWidth-1, i+mapWidth, i+mapWidth+1];
-                let neighbors = neighborIdx.map(idx => {
-                    return (idx < 0 || idx >= tilesList.length) ? Terrain.Object : tilesList[idx];
-                });
-
-                new tilesList[i](transform, neighbors);
-            }
+            // Create a map—easy
+            let map = new Map(15,10);
 
             // Creates a text object with my imported bitmap font.
             this.scrollingText = new PIXI.BitmapText(this.msgContent, { font: '8px TecTacRegular', align: 'left'});

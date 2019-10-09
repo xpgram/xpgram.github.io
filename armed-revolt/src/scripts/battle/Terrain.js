@@ -1,19 +1,10 @@
 //@ts-check
 
+//import 'pixi.js';
 import { LowResTransform } from "../LowResTransform.js";
 import { Common } from "../Common.js";
 import { Game } from "../../main.js";
-
-/**
- * Throws errors if the given list of neighboring tiles is non-standard.
- * @param {Terrain.Object} list 
- */
-function verifyNeighboringTilesList(list) {
-    if (list.length != 9)
-        throw "Recieved a list of neighboring tiles of the wrong length.";
-    // I would verify these are all Terrain.Objects, but... not without a big refactor.
-    // Javascript is not really a typed language, you know.
-}
+import { ProximityBox } from "../ProximityBox.js";
 
 /**
  * Terrain objects represent land and sea tiles on the map.  
@@ -25,7 +16,10 @@ export var Terrain = {
      * Blank, null-type terrain object.
      * @typedef TerrainObject
      */
-    Object: class TerrainObject { },
+    Object: class TerrainObject {
+        get type() { return TerrainObject; }
+        get shallowWaters() { return true; }    // This should be in map and follow the same shallow rules that sea tiles do.
+    },
 
     // start
     // {class}: class {class}Tile {
@@ -92,14 +86,13 @@ export var Terrain = {
         _transform;
 
         get type() { return PlainTile; }
-        static get landTile() { return true; }
+        get landTile() { return true; }
+        get shallowWaters() { return true; }
 
         /**
          * @param {LowResTransform} pos The position on-map (in pixels) this tile object should occupy.
-         * @param {*} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
          */
-        constructor (pos, neighbors) {
-            this.update(neighbors);
+        constructor (pos) {
             this._transform = pos;
             this._transform.object = this._sprite;  // all three layers to share the same location.
         }
@@ -115,7 +108,7 @@ export var Terrain = {
         /**
          * @param {TerrainObject[]} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
          */
-        update (neighbors) {
+        updateShape (neighbors) {
             // TODO Move this to Terrain: static get sheet() { return ↓; }
             //let sheet = Game().app.loader.resources['./src/assets/sheets/normal-map-tiles-sm.json'].spritesheet;
             // Terrain.sheet.[whatever you need to do]
@@ -146,7 +139,7 @@ export var Terrain = {
         _container = new PIXI.Container();
         _transform;
 
-        shallow = false;    // Configured by the map system. Dictates whether to draw the shallow overlay.
+        shallowWaters = false;    // Configured by the map system. Dictates whether to draw the shallow overlay.
         /*
         Here are the next steps:
         class Map
@@ -161,13 +154,12 @@ export var Terrain = {
         */
 
         get type() { return SeaTile; }
-        static get landTile() { return false; }
+        get landTile() { return false; }
 
         /**
          * @param {LowResTransform} pos The position on-map (in pixels) this tile object should occupy.
-         * @param {*} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
          */
-        constructor (pos, neighbors) {
+        constructor (pos) {
             this._transform = pos;
 
             // Setup base sea animation. (This needs to be here (because it's less wasteful) because I need all sea tiles to be in sync)
@@ -178,14 +170,11 @@ export var Terrain = {
 
             // Settings for layers
             this._layer1.blendMode = PIXI.BLEND_MODES.ADD;
-            this._layer1.alpha = 0.06;
-
-            // Blend texture shapes with surroundings
-            this.updateShape(neighbors);
+            this._layer1.alpha = 0.1;
 
             // Build complete graphical object
             this._container.addChild(this._sprite);
-            this._container.addChild(this._layer1);
+            this._container.addChild(this._layer1); // TODO: I may want to shift this down 2 to 4 px, but I can't until I add layers to the stage.
             this._container.addChild(this._layer2);
 
             // Add to screen and link transform.
@@ -202,41 +191,49 @@ export var Terrain = {
         }
 
         /**
-         * @param {TerrainObject[]} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile grahic or anim set.
+         * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile grahic or anim set.
          */
         updateShape (neighbors) {
-            verifyNeighboringTilesList(neighbors);
+            this._layer2.texture = null;
+            this._layer1.texture = null;
 
-            let shallow = false;
+            // Pick the right sea-shallow overlay
 
-            // Pick the right shallow waters overlay
-            neighbors.forEach(tile => {
-                if (tile.landTile) shallow = true;
-            });
+            // Build a new proximity grid, changing all the values to shallow waters booleans.
+            // Do this so that Terrain.Object's at the edge can reflect whatever the center is.
+            if (this.shallowWaters) {
+                let ul = 0, ur = 0, dl = 0, dr = 0;
+                if (neighbors.up.shallowWaters && neighbors.upleft.shallowWaters && neighbors.left.shallowWaters)
+                    ul = 1;
+                if (neighbors.up.shallowWaters && neighbors.upright.shallowWaters && neighbors.right.shallowWaters)
+                    ur = 1;
+                if (neighbors.down.shallowWaters && neighbors.downleft.shallowWaters && neighbors.left.shallowWaters)
+                    dl = 1;
+                if (neighbors.down.shallowWaters && neighbors.downright.shallowWaters && neighbors.right.shallowWaters)
+                    dr = 1;
 
-            if (shallow)
-                this._layer1.texture = new PIXI.Texture.from('sea-shallow-0.png');
-            else
-                this._layer1.texture = null;
+                let n = `${ur}${dr}${dl}${ul}`;
+
+                if (n != "0000")
+                    this._layer1.texture = new PIXI.Texture.from('sea-shallow-'+n+'.png');
+            }
 
             // Pick the right sea-land border overlay
             let u = 0, r = 0, d = 0, l = 0;
-            if (neighbors[1] === Terrain.Plain) u = 1;
-            if (neighbors[3] === Terrain.Plain) l = 1;
-            if (neighbors[5] === Terrain.Plain) r = 1;
-            if (neighbors[7] === Terrain.Plain) d = 1;
+            if (neighbors.up.type === Terrain.Plain) u = 1;
+            if (neighbors.down.type === Terrain.Plain) d = 1;
+            if (neighbors.left.type === Terrain.Plain) l = 1;
+            if (neighbors.right.type === Terrain.Plain) r = 1;
 
-            if (neighbors[0] === Terrain.Plain && l == 0 && u != 1) l = 2;
-            if (neighbors[2] === Terrain.Plain && u == 0 && r != 1) u = 2;
-            if (neighbors[6] === Terrain.Plain && d == 0 && l != 1) d = 2;
-            if (neighbors[8] === Terrain.Plain && r == 0 && d != 1) r = 2;
+            if (neighbors.upleft.type === Terrain.Plain && l == 0 && u != 1) l = 2;
+            if (neighbors.upright.type === Terrain.Plain && u == 0 && r != 1) u = 2;
+            if (neighbors.downleft.type === Terrain.Plain && d == 0 && l != 1) d = 2;
+            if (neighbors.downright.type === Terrain.Plain && r == 0 && d != 1) r = 2;
 
             let n = `${u}${r}${d}${l}`;
 
             if (n != "0000")
                 this._layer2.texture = new PIXI.Texture.from('sea-cliff-'+n+'.png');
-            else
-                this._layer2.texture = null;
         }
     },
 }
