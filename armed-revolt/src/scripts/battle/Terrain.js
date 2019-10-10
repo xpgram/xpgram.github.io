@@ -6,71 +6,100 @@ import { Common } from "../Common.js";
 import { Game } from "../../main.js";
 import { ProximityBox } from "../ProximityBox.js";
 import { MapLayers } from "./MapLayers.js";
+import { MoveType } from "./common-types.js";
+
+// This should be big. big boi.
+// It's meant to allow the docs to pretend that each Terrain.Type down below are the same kind of object.
+// I don't know if JSDoc honestly intends to allow me to do that.
+/**
+ * @typedef Terrain
+ * @type {Object}
+ */
 
 /**
  * Terrain objects represent land and sea tiles on the map.  
  * Use via new Terrain.Type()  
  * Terrain objects may be compared with object.type and Terrain.Type
+ * 
+ * @author Dei Valko
+ * @version 0.0.0
  */
 export var Terrain = {
+
     /**
-     * Blank, null-type terrain object.
-     * @typedef TerrainObject
+     * A blank object used for bordering the game map.
+     * Has sparse details to help the tileset system configure itself near the borders.
      */
-    Object: class TerrainObject {
-        get type() { return TerrainObject; }
-        get shallowWaters() { return true; }    // This should be in map and follow the same shallow rules that sea tiles do.
+    Object: class ObjectTile {
+        get landTile() { return false; }
+        shallowWaters = false;
     },
 
     // start
-    // {class}: class {class}Tile {
-    //     _sprite;                       // This should be a sprite object, probably... I need to figure out how to link this, actually.
-    //     _transform;                    // Used to describe this object's position in virtual space.
+    Template: class TemplateTile {
+        _layer0 = new PIXI.Sprite();            // Usually a plain or sea graphic.
+        _layer1 = new PIXI.Sprite();            // The actual terrain iconography.
+        _transform = new LowResTransform();     // The position in pixel-space that this tile object occupies.
 
-    //     get type() { return {class}Tile; }        // So we can compare tiles together.
-    //     get landTile() { return {land}; }         // This, in theory, is the difference between land and sea meteors. Seemed like it had another purpose, too... generally this has to do with map-making and auto-tile-graphics.
+        /**
+         * @type {LowResTransform}
+         */
+        get transform() { return this._transform; }
+        set transform(transform) { this._transform.copy(transform); }
 
-    //     get name() { return "{name}"; }                  // The terrain type's full name.
-    //     get shortName() { return {shortname}; }           // The terrain type's display name in compact visual situation.
-    //     get defenseRating() { return {DEF}; }               // The star-rating defense boost this terrain provides inhabiting units.
-    //     get generatesIncome() { return {income}; }         // Whether a team can gather funds from this terrain.
-    //     get repairType() { return {repair}; }     // Whether this terrain repairs units (and which).
-    //     get hidesUnits() { return {hideable}; }              // Whether this terrain hides units in Fog of War.
-    //     get vision() { return {VIS}; }                      // How far into Fog of War this captured terrain "sees." Not necessary for any but capturable types.
-    //     get description() { return "{desc}"; }
+        get type() { return TemplateTile; }     // Reference to the constructing class for type-comparisons.
+        get serial() { return ; }               // The terrain-type ID used in file IO. Or probably JSON in this case. JSON don't need no serial numbers, boi.
+        get landTile() { return ; }             // Whether this tile is earth or sea.
+        shallowWaters = false;                  // True by default: Sea and select few others modify.
 
-    //     {valuestub}
-    //     _value = 0;
-    //     get value() { return this._value; }             // Represents HP for Meteors, faction type for capturables, or anything else, really.
-    //     set value(n) { this._value = Common.bindValue(n, 0, 99); }
-    //     {end}
+        get name() { return ; }                 // The terrain type's full name.
+        get shortName() { return ; }            // The terrain type's display name in compact visual situations.
+        get defenseRating() { return ; }        // The star-rating defense boost this terrain provides inhabiting units.
+        get generatesIncome() { return ; }      // Whether a team can gather funds from this terrain.
+        get repairType() { return ; }           // Whether this terrain repairs units (and which kind).
+        get hidesUnits() { return ; }           // Whether this terrain hides units in Fog of War.
+        get vision() { return ; }               // How far into Fog of War this captured terrain "sees." Not necessary for any but capturable types.
+        get description() { return ; }          // The flavor text of this particular terrain.
 
-    //     /**
-    //      * @param {MoveType} type The kind of travel mechanism being inquired about. Should be TravelType.Type
-    //      * @return {number} The number of movement points required to move into this tile. A return of '0' should mean it is impossible to move into this tile space.
-    //      */
-    //     movementCost(type) {
-    //         let costs = [{movementmatrix}];  // Inftry, Mech, TireA, TireB, Tread, Air, Ship, Transport
-    //         return costs[type];
-    //     }
+        _value = 0;                             // Represents HP for Meteors, faction type for capturables, or anything else, really.
+        get value() { return this._value; }     // Most terrains do not need this.
+        set value(n) { this._value = Common.bindValue(n, 0, 99); }
 
-    //     /**
-    //      * @param {LowResTransform} pos The position on-map (in pixels) this tile object should occupy.
-    //      * @param {*} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
-    //      */
-    //     constructor (pos, neighbors) {
-    //         this._transform = pos;
-    //         this._transform.object = this._sprite;
-    //         this.update(neighbors);
-    //     }
+        /**
+         * @param {number} type The kind of travel mechanism being inquired about. Use MoveType.Type
+         * @return {number} The number of movement points required to move into this tile. A return of '0' means it is impossible to move into this tile space.
+         */
+        movementCost(type) {
+            let costs = [0,0,0,0,0,0,0,0];  // Inftry, Mech, TireA, TireB, Tread, Air, Ship, Transport
+            return costs[type];
+        }
 
-    //     /**
-    //      * @param {TerrainObject[]} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile grahic or anim set.
-    //      */
-    //     update (neighbors) {
-    //         // stub
-    //     }
-    // },
+        constructor() {
+            let layers = [];
+            layers.push(this._layer0);
+            layers.push(this._layer1);
+            this._transform.object = layers;
+
+            MapLayers['bottom'].addChild(this._layer0);
+            MapLayers['bottom'].addChild(this._layer1);
+        }
+
+        /**
+         * Destroys associated sprite objects and transform.
+         */
+        destroy() {
+            this._layer0.destroy();
+            this._layer1.destroy();
+            this._transform.destroy();
+        }
+
+        /**
+         * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbors. Used to pick the right tile graphic or anim set.
+         */
+        orientSelf(neighbors) {
+            // stub
+        }
+    },
     // end
 
     Plain: class PlainTile {
@@ -80,10 +109,7 @@ export var Terrain = {
          * @type {LowResTransform}
          */
         get transform() { return this._transform; }
-        set transform(obj) {
-            if (obj instanceof LowResTransform)
-                this._transform.copy(obj);
-        }
+        set transform(obj) { this._transform.copy(obj); }
         _transform;
 
         get type() { return PlainTile; }
@@ -96,38 +122,23 @@ export var Terrain = {
         constructor (pos) {
             this._transform = pos;
             this._transform.object = this._sprite;  // all three layers to share the same location.
-            MapLayers['base'].addChild(this._sprite);
+            MapLayers['bottom'].addChild(this._sprite);
         }
 
         /**
          * Removes associated objects from containers and breaks references to allow the garbage collector to do its job.
          */
-        destoy() {
-            MapLayers['base'].removeChild(this._sprite);
+        destroy() {
+            MapLayers['bottom'].removeChild(this._sprite);
             // If this has a reference to its transform, but no object has a reference to this, will the GC still collect this and the transform?
         }
 
         /**
-         * @param {TerrainObject[]} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
+         * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
          */
-        updateShape (neighbors) {
-            // TODO Move this to Terrain: static get sheet() { return ↓; }
-            //let sheet = Game().app.loader.resources['./src/assets/sheets/normal-map-tiles-sm.json'].spritesheet;
-            // Terrain.sheet.[whatever you need to do]
-
-            // PIXI.Texture.from("") checks the loaded base textures, btw, so the sheet line above is probably unnecessary.
-
-            /*
-            I'm going to bed. Here's where I am:
-            PIXI.Texture.from(loaded assets) is not working (..?)
-            But PIXI.Sprite and PIXI.AnimatedSprite are.
-            However, something is not properly linking them with their transforms.
-            They're not moving into place.
-            I should assert that transform.object actually gets filled.
-            */
-
+        orientSelf(neighbors) {
             let n = (Math.random() < 0.3) ? Math.floor(Math.random()*6)+1 : 0;
-            this._sprite.texture = new PIXI.Texture.from('plain-'+n+'.png');
+            this._sprite.texture = PIXI.Texture.from('plain-'+n+'.png');
         }
     },
 
@@ -135,22 +146,9 @@ export var Terrain = {
         _sprite; // = new PIXI.AnimatedSprite();    ← I would do this, but a blank constructor is bugged or intentionally broken. Workarounds!
         _layer1 = new PIXI.Sprite();
         _layer2 = new PIXI.Sprite();
-        _container = new PIXI.Container();
         _transform;
 
         shallowWaters = false;    // Configured by the map system. Dictates whether to draw the shallow overlay.
-        /*
-        Here are the next steps:
-        class Map
-            Takes in serialized list of tiles
-            Turns them into a list of objects (by asking Terrain to unserialize them)
-            Tile constructors DO NOT start configuring graphics
-            Map iterates over itself, tells sea tiles they are shallow if they are adjacent a land tile
-            Map iterates over itself, tells all tiles to update their shape while providing their neighbors (objects, not types: no need for static methods)
-            This is where sea will choose an overlay shallow graphic and a cliff graphic
-        Write a Task Log with checkboxes an shit. If I write anymore of these in the code, I'm going to start losing them.
-        There is one in LowResTransform, btw.
-        */
 
         get type() { return SeaTile; }
         get landTile() { return false; }
@@ -164,6 +162,7 @@ export var Terrain = {
             // Setup base sea animation. (This needs to be here (because it's less wasteful) because I need all sea tiles to be in sync)
             let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
             this._sprite = new PIXI.AnimatedSprite(sheet.animations["sea"]);
+            //this._sprite.tint = 0xA0D0FF;
             this._sprite.animationSpeed = 0.1;
             this._sprite.play();
 
@@ -172,13 +171,16 @@ export var Terrain = {
             this._layer1.alpha = 0.1;
 
             // Build complete graphical object
-            this._container.addChild(this._sprite);
-            this._container.addChild(this._layer1); // TODO: I may want to shift this down 2 to 4 px, but I can't until I add layers to the stage.
-            this._container.addChild(this._layer2);
+            let image = [];
+            image.push(this._sprite);
+            image.push(this._layer1); // TODO: I may want to shift this down 2 to 4 px, but I can't until I add layers to the stage.
+            image.push(this._layer2);
 
             // Add to screen and link transform.
-            MapLayers['base'].addChild(this._container);
-            this._transform.object = this._container;
+            MapLayers['bottom'].addChild(this._sprite);
+            MapLayers['bottom'].addChild(this._layer1);
+            MapLayers['bottom'].addChild(this._layer2);
+            this._transform.object = image;
         }
 
         /**
@@ -192,7 +194,7 @@ export var Terrain = {
         /**
          * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile grahic or anim set.
          */
-        updateShape (neighbors) {
+        orientSelf(neighbors) {
             this._layer2.texture = null;
             this._layer1.texture = null;
 
@@ -214,7 +216,7 @@ export var Terrain = {
                 let n = `${ur}${dr}${dl}${ul}`;
 
                 if (n != "0000")
-                    this._layer1.texture = new PIXI.Texture.from('sea-shallow-'+n+'.png');
+                    this._layer1.texture = PIXI.Texture.from('sea-shallow-'+n+'.png');
             }
 
             // Pick the right sea-land border overlay
@@ -232,7 +234,7 @@ export var Terrain = {
             let n = `${u}${r}${d}${l}`;
 
             if (n != "0000")
-                this._layer2.texture = new PIXI.Texture.from('sea-cliff-'+n+'.png');
+                this._layer2.texture = PIXI.Texture.from('sea-cliff-'+n+'.png');
         }
     },
 
@@ -265,14 +267,14 @@ export var Terrain = {
             this._transform.object = this._layer0;
             this._transform.object = this._layer1;
 
-            MapLayers['base'].addChild(this._layer0);
-            MapLayers['base'].addChild(this._layer1);
+            MapLayers['bottom'].addChild(this._layer0);
+            MapLayers['bottom'].addChild(this._layer1);
         }
 
         /**
          * Removes associated objects from containers and breaks references to allow the garbage collector to do its job.
          */
-        destoy() {
+        destroy() {
             Game().app.stage.removeChild(this._container);
             this._transform.destroy();
             this._layer0.destroy();
@@ -283,12 +285,12 @@ export var Terrain = {
         /**
          * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
          */
-        updateShape (neighbors) {
-            this._layer0.texture = new PIXI.Texture.from('plain-0.png');
+        orientSelf(neighbors) {
+            this._layer0.texture = PIXI.Texture.from('plain-0.png');
 
             let l = (neighbors.left.type == Terrain.Wood) ? 1 : 0;
             let r = (neighbors.right.type == Terrain.Wood) ? 1 : 0;
-            this._layer1.texture = new PIXI.Texture.from(`wood-${l}${r}.png`);
+            this._layer1.texture = PIXI.Texture.from(`wood-${l}${r}.png`);
         }
     },
 
@@ -328,16 +330,15 @@ export var Terrain = {
             this._transform.position.z = this._transform.position.y - this._transform.position.x; // Affect layer1/2, just doesn't work.
             this._transform.object = this._layer2;  // I think I can get LowResTransform to accept a list of targets.
 
-            MapLayers['base'].addChild(this._layer0);
-            MapLayers['surface'].addChild(this._layer1);
-            MapLayers['surface'].addChild(this._layer2);
-            MapLayers['surface'].sortChildren();    // This should obviously be in map
+            MapLayers['bottom'].addChild(this._layer0);
+            MapLayers['top'].addChild(this._layer1);
+            MapLayers['top'].addChild(this._layer2);
         }
 
         /**
          * Removes associated objects from containers and breaks references to allow the garbage collector to do its job.
          */
-        destoy() {
+        destroy() {
             Game().app.stage.removeChild(this._container);
             this._transform.destroy();
             this._layer0.destroy();
@@ -349,14 +350,14 @@ export var Terrain = {
         /**
          * @param {ProximityBox} neighbors a 3x3 grid containing this tile's nearest neighbor's types. Used to pick the right tile graphic or anim set.
          */
-        updateShape (neighbors) {
-            this._layer0.texture = new PIXI.Texture.from('plain-0.png');
+        orientSelf(neighbors) {
+            this._layer0.texture = PIXI.Texture.from('plain-0.png');
 
             let l = (neighbors.left.type == Terrain.Mountain) ? 1 : 0;
             let r = (neighbors.right.type == Terrain.Mountain) ? 1 : 0;
-            this._layer1.texture = new PIXI.Texture.from(`mountain-${l}${r}.png`);
+            this._layer1.texture = PIXI.Texture.from(`mountain-${l}${r}.png`);
 
-            this._layer2.texture = new PIXI.Texture.from('shadow.png');
+            this._layer2.texture = PIXI.Texture.from('shadow.png');
             this._layer2.alpha = 0.3;
         }
     },

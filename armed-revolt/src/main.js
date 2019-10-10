@@ -7,7 +7,7 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;                // Gives us 
 class GameInstance {
 
     display = {
-        standardLength: 16,    // I have no idea if this will ever be useful. Prolly not.
+        standardLength: 16,
 
         // Internal resolution (GBA)
         internalWidth: 240,

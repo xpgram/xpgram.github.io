@@ -10,7 +10,7 @@
 export class Square {
     terrain;    // What terrain is located here. Use terrain.type for comparisons.
     unit;       // Which unit currently inhabits this tile.
-    _sprite = new PIXI.Sprite();
+    _sprite;    // Not implemented. Its purpose is drawing grid highlights on the map. DoR actually uses tints, though.
     _displayInfo = 0;
 
     // Constants/accessor-values for _displayInfo

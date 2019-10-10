@@ -6,20 +6,19 @@ import { Game } from "../../main.js";
  * Must be initialized before use.
  * 
  * Layers:
- * 'base'
- * 'surface'
- * 'buildings'
- * 'units'
+ * 'bottom'
+ * 'top'
+ * 'fog'
+ * 
  * @author Dei Valko
  * @version 0.1.0
  */
 export var MapLayers = {
     destroyed: true,
     layerNames: [
-        'base',
-        'surface',
-        'buildings',
-        'units'
+        'bottom',
+        'top',    // units, meteors and plasma get +1 to z-index
+        'fog'
     ],
 
     /**

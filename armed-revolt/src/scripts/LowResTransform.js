@@ -15,28 +15,7 @@ Keep in mind, this class cannot block access to a Pixi object's transform values
 doing so would obstruct other properties that are beyond the scope of this class.
 
 @author Dei Valko
-@version 0.1.1
-*/
-
-/*
-    Todo list unspecific to this particular class:
-
-    app.stage.set.layer
-    Terrain.Tile needs a deconstructor to remove sprites from the stage
-    Camera will move the set around, stage will scale itself according to window size (as it does)
-  ✓ Transform needs to accept an empty focus (when setting x,y properties too! Don't call updateObject or otherwise when it's empty!)
-    Terrain.Tile should also have default, empty values when nothing is passed in (probably easy).
-    Terrain.Tile gets added to Map.Tiles, Terrain.Tile.Sprite gets added to app.stage.set.layer
-    Terrain.Tile should have a read-only serialNumber for file IO. Python can write this.
-    This serialNumber is passed in to Map as a mapfile, which is converted to a 2D array of Terrain.Types
-    Map has a width and a list of tiles (height is inferred)
-    Map iterates through its list of types, creates a new Terrain.Tile by passing in position and neighbors, and pushes the result to its 1D list of tiles.
-    Map should complain if width*rows != total tiles
-    Map.height = rows
-    Once created, Map can discard its list of types, just keeping its tiles.
-    Map (maybe called Board?) keeps track of units too.
-    All in one place means all easily serializeable (I think).
-    I mean, Board.tiles Board.units, that's you're entire game right there.
+@version 0.1.2
 */
 
 // Constants
@@ -52,7 +31,14 @@ export class LowResTransform {
      */
     constructor(object = null, pos = null) {
         if (pos instanceof PIXI.Point) this.position = pos;
-        this.object = object || null;
+        this.object = object;
+    }
+
+    /**
+     * Removes all references from the object pool.
+     */
+    destroy() {
+        this.object = null;
     }
 
     /**
@@ -60,14 +46,17 @@ export class LowResTransform {
      * @type {PIXI.Object} Anything with PIXI.Transform attached to it.
      */
     get object() {
-        return this._object;
+        return this._objectList;
     }
     set object(obj) {
-        this._object = obj;
+        if (Array.isArray(obj) == false)
+            if (obj != null)
+                obj = [obj];
+        this._objectList = obj;
         this._updateObjectTransform();
         // TODO Apply a filter to PIXI.Sprite objects which mimic low-res pixel interpolation (nearest neighbor).
     }
-    _object;
+    _objectList = null;
 
     /**
      * Conforms the controlled object to this transform.
@@ -81,23 +70,28 @@ export class LowResTransform {
     _updateObjectPosition() {
         if (this.object == null)
             return;
-        this.object.x = floor(this.position.x);
-        this.object.y = floor(this.position.y);
-        this.object.zIndex = floor(this.position.z);
+        this._objectList.forEach(object => {
+            object.x = floor(this.position.x);
+            object.y = floor(this.position.y);
+            object.zIndex = floor(this.position.z);
+        });
     }
     _updateObjectRotation() {
         if (this.object == null)
             return;
-        this.object.rotation = this.rotation;
+        this._objectList.forEach(object => {
+            object.rotation = this.rotation;
+        });
     }
     _updateObjectScale() {
         if (this.object == null)
             return;
-        this.object.scale.x = this.scale.x;
-        this.object.scale.y = this.scale.y;
-        this.object.scale.width = floor(this.object.scale.width);   // Confines the transform to a nice, rounded-integer, pixel-block size.
-        this.object.scale.height = floor(this.object.scale.height); // Does not force low-res image interpolation, however.
-                                                                    // And now that I think about it, this only forces screen-pixel alignment anyway. Right?
+        this._objectList.forEach(object => {
+            object.scale.x = this.scale.x;
+            object.scale.y = this.scale.y;
+            object.scale.width = floor(object.scale.width);     // Confines the transform to a nice, rounded-integer, pixel-block size.
+            object.scale.height = floor(object.scale.height);   // Does not force low-res image interpolation, however.
+        });
     }
 
     /**
@@ -121,7 +115,7 @@ export class LowResTransform {
         return this._position;
     }
     set position(obj) {
-        if (obj instanceof PIXI.Point)
+        if (obj instanceof PIXI.Point)      // TODO: Check if obj has properties x and y, if not _throw an error_.
             this.position.set(obj.x, obj.y);
     }
     _position = ((parent) => { return {
