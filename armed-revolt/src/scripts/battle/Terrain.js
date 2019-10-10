@@ -266,7 +266,7 @@ export var Terrain = {
             this._transform.object = this._layer1;
 
             MapLayers['base'].addChild(this._layer0);
-            MapLayers['surface'].addChild(this._layer1);
+            MapLayers['base'].addChild(this._layer1);
         }
 
         /**
