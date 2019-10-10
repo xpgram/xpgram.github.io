@@ -29,10 +29,11 @@ export class Map {
         this._layers = MapLayers;
         this._layers.init();
 
-        this._initMap(width, height);
-        this._generateMap();    // Generates a pleasant-looking map.
-        this._setupMap();       // Perliminary setup for things like sea-tiles knowing they're shallow.
-        this._updateMap();      // Ask each tile to formally align themselves with their surroundings (e.g.: sea(neighbors) → shallow/cliff sprites)
+        this._constructMap(width, height);
+        this._generateMap();        // Generates a pleasant-looking map.
+        this._instantiateMap();     // Turn all types into objects.
+        this._configureMap();       // Perliminary setup for things like sea-tiles knowing they're shallow.
+        this._blendMap();          // Ask each tile to formally align themselves with their surroundings (e.g.: sea(neighbors) → shallow/cliff sprites)
     }
 
     /**
@@ -41,7 +42,7 @@ export class Map {
      * @param {Number} width
      * @param {Number} height 
      */
-    _initMap(width, height) {
+    _constructMap(width, height) {
         this._board = {};
 
         // Construct map skeleton
@@ -61,25 +62,21 @@ export class Map {
         for (let x = 0; x < this.width; x++)
         for (let y = 0; y < this.height; y++) {
             let newType = Terrain.Sea;
-            let ratio = 0.2;
+            let ratio = 0.05;
             let loc = new PIXI.Point(x,y);
 
-            let transform = new LowResTransform();
-            transform.position.x = x*16;        // ← Why am I doing this? Just pass in a Point().
-            transform.position.y = y*16;
-
-            loc.y--;
-            if (this.validPoint(loc) &&
-                this.get(loc).terrain.type != Terrain.Sea)
-                ratio += 0.25;
-            loc.x--; loc.y++;
-            if (this.validPoint(loc) &&
-                this.get(loc).terrain.type != Terrain.Sea)
-                ratio += 0.25;
             loc.y--;
             if (this.validPoint(loc) &&
                 this.get(loc).terrain.type != Terrain.Sea)
                 ratio += 0.15;
+            loc.x--; loc.y++;
+            if (this.validPoint(loc) &&
+                this.get(loc).terrain.type != Terrain.Sea)
+                ratio += 0.15;
+            loc.y--;
+            if (this.validPoint(loc) &&
+                this.get(loc).terrain.type != Terrain.Sea)
+                ratio += 0.05;
 
             if (Math.random() < ratio) {
                 let n = Math.random();
@@ -91,7 +88,17 @@ export class Map {
                     newType = Terrain.Mountain;
             }
 
-            this._board[x][y].terrain = new newType(transform);
+            this._board[x][y].terrain = newType;
+        }
+    }
+
+    _instantiateMap() {
+        for (let x = 0; x < this.width; x++)
+        for (let y = 0; y < this.height; y++) {
+            let transform = new LowResTransform();
+            transform.position.x = x*16;        // ← Why am I doing this? Just pass in a Point().
+            transform.position.y = y*16;
+            this._board[x][y].terrain = new this._board[x][y].terrain(transform);
         }
     }
 
@@ -99,7 +106,7 @@ export class Map {
      * Iterates through the map, first pass, applying some preliminary settings to various tiles
      * based on their surroundings.
      */
-    _setupMap() {
+    _configureMap() {
         for (let x = 0; x < this.width; x++)
         for (let y = 0; y < this.height; y++) {
             let loc = new PIXI.Point(x,y);
@@ -121,7 +128,7 @@ export class Map {
         }
     }
 
-    _updateMap() {
+    _blendMap() {
         for (let x = 0; x < this.width; x++)
         for (let y = 0; y < this.height; y++) {
 
@@ -198,8 +205,8 @@ export class Map {
             throw InvalidLocationError(src);
         if (!this.validPoint(dest))
             throw InvalidLocationError(dest);
-        if (!this.occupiable(dest))
-            return false;
+        if (!this.occupiable(dest))             // Non functional.
+            return false;                       // I'm not working on this portion of the code yet.
         
         let traveler = this.get(src).unit; // Can be null
         this.placeUnit(traveler, dest);

@@ -260,6 +260,7 @@ export var Terrain = {
          */
         constructor (pos) {
             this._transform = pos;
+            this._transform.position.z = this._transform.position.y - this._transform.position.x;
             //this._transform.object = this._container;
             this._transform.object = this._layer0;
             this._transform.object = this._layer1;
@@ -324,11 +325,13 @@ export var Terrain = {
             this._transform = pos;
             this._transform.object = this._layer0;  // Right... objects can only be child of one thing.
             this._transform.object = this._layer1;  // I'll need to figure out how to share transforms then—some way besides pixi containers.
+            this._transform.position.z = this._transform.position.y - this._transform.position.x; // Affect layer1/2, just doesn't work.
             this._transform.object = this._layer2;  // I think I can get LowResTransform to accept a list of targets.
 
             MapLayers['base'].addChild(this._layer0);
             MapLayers['surface'].addChild(this._layer1);
-            MapLayers['surface effects'].addChild(this._layer2);
+            MapLayers['surface'].addChild(this._layer2);
+            MapLayers['surface'].sortChildren();    // This should obviously be in map
         }
 
         /**
@@ -354,7 +357,7 @@ export var Terrain = {
             this._layer1.texture = new PIXI.Texture.from(`mountain-${l}${r}.png`);
 
             this._layer2.texture = new PIXI.Texture.from('shadow.png');
-            this._layer2.alpha = 0.25;
+            this._layer2.alpha = 0.3;
         }
     },
 }

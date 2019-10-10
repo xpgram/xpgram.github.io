@@ -2,35 +2,49 @@ import { Game } from "../../main.js";
 
 /**
  * Globally accessible layers for the map system's sprites.
+ * Use: MapLayers['layer name'].doSomething();
+ * Must be initialized before use.
  * 
- * I should rethink this later:
- * How am I going to destroy these layers on shutdown?
- * I guess I could write a class, create one, then export the created one like I did with Game.
- * 
+ * Layers:
+ * 'base'
+ * 'surface'
+ * 'buildings'
+ * 'units'
  * @author Dei Valko
  * @version 0.1.0
  */
-var MapLayers = {
+export var MapLayers = {
+    destroyed: true,
+    layerNames: [
+        'base',
+        'surface',
+        'buildings',
+        'units'
+    ],
+
+    /**
+     * Creates containers acting as layers and adds them to the global stage.
+     */
     init() {
-        layerNames.forEach(layer => {
-            Game().app.stage.addChild(this[layer]);
-        });
+        if (this.destroyed) {
+            MapLayers.layerNames.forEach(layer => {
+                MapLayers[layer] = new PIXI.Container();
+                Game().app.stage.addChild(this[layer]);
+            });
+            this.destroyed = false;
+        }
+    },
+
+    /**
+     * Destroys all layers and all their children.
+     */
+    destroy() {
+        if (!this.destroyed) {
+            MapLayers.layerNames.forEach(layer => {
+                Game().app.stage.removeChild(this[layer]);
+                this[layer].destroy({ children: true, textures: true });
+            });
+            this.destroyed = true;
+        }
     }
 };
-
-// Declare layer names
-let layerNames = [
-    'base',
-    'surface',
-    'surface effects',
-    'buildings',
-    'units'
-];
-
-// Set them into the layers object and make layers visible
-layerNames.forEach(layer => {
-    MapLayers[layer] = new PIXI.Container();
-});
-
-// Importable
-export {MapLayers};
