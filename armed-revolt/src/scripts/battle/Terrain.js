@@ -64,6 +64,22 @@ function seaShallowVariant(neighbors) {
     return `${ur}${dr}${dl}${ul}`;
 }
 
+function beachVariant(neighbors) {
+    let u, r, d, l;
+
+    u = (neighbors.up.landTile) ? 1 : 0;
+    r = (neighbors.right.landTile) ? 1 : 0;
+    d = (neighbors.down.landTile) ? 1 : 0;
+    l = (neighbors.left.landTile) ? 1 : 0;
+    
+    u = (neighbors.up.type == Terrain.Beach) ? 2 : u;
+    r = (neighbors.right.type == Terrain.Beach) ? 2 : r;
+    d = (neighbors.down.type == Terrain.Beach) ? 2 : d;
+    l = (neighbors.left.type == Terrain.Beach) ? 2 : l;
+
+    return `${u}${r}${d}${l}`;
+}
+
 function fourDirectionalVariant(neighbors, type1, type2 = null) {
     // 0 = none, 1 = same type, 2 = alt type
     // l=2 u=1 u=2
@@ -123,12 +139,36 @@ export var Terrain = {
      */
 
     /**
+     * @param {ProximityBox} proxBox 
+     * @returns {boolean} True iff a beach can be placed in this neighborly situation.
+     */
+    beachLegal(proxBox) {
+        // No isolated corners
+        if (proxBox.upright.landTile && !proxBox.up.landTile && !proxBox.right.landTile ||
+            proxBox.downright.landTile && !proxBox.down.landTile && !proxBox.right.landTile ||
+            proxBox.downleft.landTile && !proxBox.down.landTile && !proxBox.left.landTile ||
+            proxBox.upleft.landTile && !proxBox.up.landTile && !proxBox.left.landTile)
+            return false;
+        // No opposing sides
+        if (proxBox.right.landTile && proxBox.left.landTile && !proxBox.up.landTile && !proxBox.down.landTile ||
+            proxBox.up.landTile && proxBox.down.landTile && !proxBox.right.landTile && !proxBox.left.landTile)
+            return false;
+        // No all-four-sides
+        if (proxBox.up.landTile && proxBox.right.landTile && proxBox.down.landTile && proxBox.left.landTile)
+            return false;
+
+        // Must have at least 1 side
+        return  (proxBox.up.landTile || proxBox.right.landTile || proxBox.down.landTile || proxBox.left.landTile);
+    },
+
+    /**
      * A blank object used for bordering the game map.
      * Has sparse details to help the tileset system configure itself near the borders.
      * type {Terrain}
      */
     Void: class VoidTile {
         get landTile() { return false; }
+        static landTile = false;
         shallowWaters = false;
     },
 
@@ -143,6 +183,7 @@ export var Terrain = {
         get type() { return PlainTile; }
         get serial() { return 0; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Plain"; }
@@ -191,6 +232,7 @@ export var Terrain = {
         get type() { return RoadTile; }
         get serial() { return 1; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Road"; }
@@ -249,6 +291,7 @@ export var Terrain = {
         get type() { return WoodTile; }
         get serial() { return 2; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Wood"; }
@@ -308,6 +351,7 @@ export var Terrain = {
         get type() { return MountainTile; }
         get serial() { return 3; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Mountain"; }
@@ -373,6 +417,7 @@ export var Terrain = {
         get type() { return WastelandTile; }
         get serial() { return 4; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Wasteland"; }
@@ -421,6 +466,7 @@ export var Terrain = {
         get type() { return RuinsTile; }
         get serial() { return 5; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Ruins"; }
@@ -479,6 +525,7 @@ export var Terrain = {
         get type() { return BridgeTile; }
         get serial() { return 6; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Bridge"; }
@@ -536,6 +583,7 @@ export var Terrain = {
         get type() { return RiverTile; }
         get serial() { return 7; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "River"; }
@@ -585,6 +633,7 @@ export var Terrain = {
         get type() { return SeaTile; }
         get serial() { return 8; }
         get landTile() { return false; }
+        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Sea"; }
@@ -651,8 +700,9 @@ export var Terrain = {
 
     /** type {Terrain} */
     Beach: class BeachTile {
-        _layer0 = new PIXI.Sprite();
+        _layer0;
         _layer1 = new PIXI.Sprite();
+        _layer2 = new PIXI.Sprite();
 
         _transform;
         get transform() { return this._transform; }
@@ -661,6 +711,7 @@ export var Terrain = {
         get type() { return BeachTile; }
         get serial() { return 9; }
         get landTile() { return false; }
+        static landTile = false;
         get shallowWaters() { return true; }
 
         get name() { return "Beach"; }
@@ -678,28 +729,43 @@ export var Terrain = {
         }
 
         constructor(transform = null) {
+            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
+
+            this._layer0 = new PIXI.AnimatedSprite(sheet.animations["sea"]);
+            this._layer0.animationSpeed = 0.1;
+            this._layer0.play();
+
+            this._layer1.texture = PIXI.Texture.from('sea-shallow-1111.png');
+            this._layer1.blendMode = PIXI.BLEND_MODES.ADD;
+            this._layer1.alpha = 0.1;
+
             this._transform = transform || new LowResTransform();
 
             let layers = [];
             layers.push(this._layer0);
             layers.push(this._layer1);
+            layers.push(this._layer2);
             this._transform.object = layers;
 
             MapLayers['bottom'].addChild(this._layer0);
             MapLayers['bottom'].addChild(this._layer1);
+            MapLayers['bottom'].addChild(this._layer2);
         }
 
         destroy() {
             MapLayers['bottom'].removeChild(this._layer0);
             MapLayers['bottom'].removeChild(this._layer1);
+            MapLayers['bottom'].removeChild(this._layer2);
 
             this._layer0.destroy();
             this._layer1.destroy();
+            this._layer2.destroy();
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
-            // stub
+            let v = beachVariant(neighbors);
+            this._layer2.texture = PIXI.Texture.from(`beach-${v}.png`);
         }
     },
 
@@ -716,6 +782,7 @@ export var Terrain = {
         get type() { return RoughSeaTile; }
         get serial() { return 10; }
         get landTile() { return false; }
+        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Rough Sea"; }
@@ -793,6 +860,7 @@ export var Terrain = {
         get type() { return MistTile; }
         get serial() { return 11; }
         get landTile() { return false; }
+        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Mist"; }
@@ -881,6 +949,7 @@ export var Terrain = {
         get type() { return ReefTile; }
         get serial() { return 12; }
         get landTile() { return false; }
+        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Reef"; }
@@ -955,6 +1024,7 @@ export var Terrain = {
         get type() { return FireTile; }
         get serial() { return 13; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Fire"; }
@@ -1018,6 +1088,7 @@ export var Terrain = {
         get type() { return MeteorTile; }
         get serial() { return 14; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Meteor"; }
@@ -1076,6 +1147,7 @@ export var Terrain = {
         get type() { return PlasmaTile; }
         get serial() { return 15; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Plasma"; }
@@ -1130,6 +1202,7 @@ export var Terrain = {
         get type() { return PipelineTile; }
         get serial() { return 16; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Pipeline"; }
@@ -1184,6 +1257,7 @@ export var Terrain = {
         get type() { return PipeSeamTile; }
         get serial() { return 17; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Pipe Seam"; }
@@ -1242,6 +1316,7 @@ export var Terrain = {
         get type() { return HQTile; }
         get serial() { return 18; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "HQ"; }
@@ -1300,6 +1375,7 @@ export var Terrain = {
         get type() { return CityTile; }
         get serial() { return 19; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "City"; }
@@ -1364,6 +1440,7 @@ export var Terrain = {
         get type() { return ComTowerTile; }
         get serial() { return 20; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Com Tower"; }
@@ -1422,6 +1499,7 @@ export var Terrain = {
         get type() { return RadarTile; }
         get serial() { return 21; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Radar"; }
@@ -1480,6 +1558,7 @@ export var Terrain = {
         get type() { return SiloTile; }
         get serial() { return 22; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Silo"; }
@@ -1538,6 +1617,7 @@ export var Terrain = {
         get type() { return FactoryTile; }
         get serial() { return 23; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Factory"; }
@@ -1596,6 +1676,7 @@ export var Terrain = {
         get type() { return AirportTile; }
         get serial() { return 24; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Airport"; }
@@ -1654,6 +1735,7 @@ export var Terrain = {
         get type() { return PortTile; }
         get serial() { return 25; }
         get landTile() { return false; }
+        static landTile = false;
         get shallowWaters() { return false; }
 
         get name() { return "Port"; }
@@ -1712,6 +1794,7 @@ export var Terrain = {
         get type() { return TempAirptTile; }
         get serial() { return 26; }
         get landTile() { return true; }
+        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Temp Airpt"; }
@@ -1770,6 +1853,7 @@ export var Terrain = {
         get type() { return TempPortTile; }
         get serial() { return 27; }
         get landTile() { return false; }
+        static landTile = false;
         get shallowWaters() { return false; }
 
         get name() { return "Temp Port"; }

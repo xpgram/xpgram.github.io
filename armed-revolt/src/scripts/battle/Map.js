@@ -118,6 +118,16 @@ export class Map {
                 this.squareAt({x: pos.x + xx, y: pos.y + yy}).terrain = Terrain.Sea;
             this.squareAt(pos).terrain = newType;
         }
+
+        for (let x = 0; x < this.width; x++)
+        for (let y = 0; y < this.height; y++) {
+            let pos = {x: x, y: y};
+
+            if (this.squareAt(pos).terrain == Terrain.Sea &&
+                Terrain.beachLegal(this.neighborsAt(pos)))
+                if (Math.random() < 0.5)
+                    this.squareAt(pos).terrain = Terrain.Beach;
+        }
     }
 
     /**
@@ -157,10 +167,12 @@ export class Map {
             let square = this.squareAt(pos);
             if (square.terrain.landTile ||
                 square.terrain.type == Terrain.Mist ||
-                square.terrain.type == Terrain.Reef) {
+                square.terrain.type == Terrain.Reef ||
+                square.terrain.type == Terrain.Beach) {
                 let neighbors = this.neighborsAt(pos);
                 for (let i = 0; i < neighbors.list.length; i++) {
-                    if (!neighbors.list[i].landTile) {
+                    if (!neighbors.list[i].landTile &&
+                        !neighbors.list[i].shallowWaters) {
                         neighbors.list[i].shallowWaters = true;
                     }
                 }
