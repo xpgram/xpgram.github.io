@@ -36,7 +36,7 @@ export class ArmorType {
 export class UnitClass {
     static None     = 0;
     static Ground   = 1;
-    static Navy     = 2;
+    static Naval    = 2;
     static Air      = 3;
 }
 

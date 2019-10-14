@@ -1,7 +1,9 @@
 - [ ] Python script → generated Javascript code (Terrain Tiles)
   - [x] Finish JS code template
-- [ ] Standardize Terrain tileset picker
+- [x] Standardize Terrain tileset picker
   sea-cliff and sea-shallow are fairly simple now, move them into reusable methods.
+- [ ] Figure out how to differentiate between bridge-sea and bridge-river
+- [ ] Standardize the sea tile: it always comes with 3 layers (sea, shallow, cliff) and is used as a base for enough tiles that writing this repeatedly should upset me.
 - [ ] Use import 'pixi.js';
   - [x] Install pixi using npm (strictly necessary?)
   - [ ] Add imports to every script that needs them
