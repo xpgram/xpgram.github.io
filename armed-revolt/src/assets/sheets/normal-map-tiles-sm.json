@@ -248,6 +248,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
+"beach-2111.png":
+{
+	"frame": {"x":360,"y":94,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16}
+},
 "beach-0112.png":
 {
 	"frame": {"x":376,"y":1,"w":16,"h":16},
@@ -360,6 +368,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
+"beach-1211.png":
+{
+	"frame": {"x":376,"y":55,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16}
+},
 "beach-1021.png":
 {
 	"frame": {"x":378,"y":73,"w":16,"h":16},
@@ -384,6 +400,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
+"beach-1121.png":
+{
+	"frame": {"x":378,"y":109,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16}
+},
 "beach-1102.png":
 {
 	"frame": {"x":394,"y":1,"w":16,"h":16},
@@ -393,6 +417,14 @@
 	"sourceSize": {"w":16,"h":16}
 },
 "beach-1110.png":
+{
+	"frame": {"x":394,"y":19,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16}
+},
+"beach-1112.png":
 {
 	"frame": {"x":394,"y":19,"w":16,"h":16},
 	"rotated": false,
@@ -568,6 +600,30 @@
 	"spriteSourceSize": {"x":0,"y":2,"w":13,"h":14},
 	"sourceSize": {"w":16,"h":16}
 },
+"bridge-0000.png":
+{
+	"frame": {"x":874,"y":73,"w":16,"h":12},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":16,"h":12},
+	"sourceSize": {"w":16,"h":16}
+},
+"bridge-0001.png":
+{
+	"frame": {"x":874,"y":73,"w":16,"h":12},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":16,"h":12},
+	"sourceSize": {"w":16,"h":16}
+},
+"bridge-0100.png":
+{
+	"frame": {"x":874,"y":73,"w":16,"h":12},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":16,"h":12},
+	"sourceSize": {"w":16,"h":16}
+},
 "bridge-0101.png":
 {
 	"frame": {"x":874,"y":73,"w":16,"h":12},
@@ -598,6 +654,22 @@
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":13,"h":14},
+	"sourceSize": {"w":16,"h":16}
+},
+"bridge-0010.png":
+{
+	"frame": {"x":901,"y":53,"w":10,"h":16},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":10,"h":16},
+	"sourceSize": {"w":16,"h":16}
+},
+"bridge-1000.png":
+{
+	"frame": {"x":901,"y":53,"w":10,"h":16},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":10,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
 "bridge-1010.png":

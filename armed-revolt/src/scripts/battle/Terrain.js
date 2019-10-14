@@ -100,6 +100,14 @@ function fourDirectionalVariant(neighbors, type1, type2 = null) {
         l = (neighbors.left.type == type2)  ? 1 : 0;
     }
 
+    // Patch fix for bridges
+    if (type1 == Terrain.Bridge) {
+        u = (neighbors.up.landTile)    ? 1 : u;
+        r = (neighbors.right.landTile) ? 1 : r;
+        d = (neighbors.down.landTile)  ? 1 : d;
+        l = (neighbors.left.landTile)  ? 1 : l;
+    }
+
     return `${u}${r}${d}${l}`;
 }
 
@@ -115,6 +123,33 @@ function lineDirectionalVariant(neighbors, type) {
     return `${l}${r}`;
 }
 
+function populateSeaLayer(container, neighbors) {
+    container.removeChildren();
+
+    let v;
+    let image = new PIXI.AnimatedSprite(Terrain.tilesheet().animations['sea']);
+    image.animationSpeed = 0.1;
+    image.play();
+    container.addChild(image);
+
+    // Add shallow waters
+    image = new PIXI.Sprite();
+    image.blendMode = PIXI.BLEND_MODES.ADD;
+    image.alpha = 0.1;
+    container.addChild(image);
+    if (neighbors.center.shallowWaters) {
+        v = seaShallowVariant(neighbors);
+        if (v != "0000")
+            image.texture = PIXI.Texture.from(`sea-shallow-${v}.png`);
+    }
+
+    image = new PIXI.Sprite();
+    container.addChild(image);
+    v = seaCliffVariant(neighbors);
+    if (v != "0000")
+        image.texture = PIXI.Texture.from(`sea-cliff-${v}.png`);
+}
+
 /**
  * Terrain objects represent land and sea tiles on the map.  
  * Use via new Terrain.Type()  
@@ -125,6 +160,9 @@ function lineDirectionalVariant(neighbors, type) {
  * @version 0.1.0
  */
 export var Terrain = {
+
+    // Namespace Globals (and settings modifiables)
+    tilesheet: () => {return Game().app.loader.resources['NormalMapTilesheet'].spritesheet;},
 
     /**
      * Interface for classes that represent a terrain type on the battlefield.
@@ -139,36 +177,13 @@ export var Terrain = {
      */
 
     /**
-     * @param {ProximityBox} proxBox 
-     * @returns {boolean} True iff a beach can be placed in this neighborly situation.
-     */
-    beachLegal(proxBox) {
-        // No isolated corners
-        if (proxBox.upright.landTile && !proxBox.up.landTile && !proxBox.right.landTile ||
-            proxBox.downright.landTile && !proxBox.down.landTile && !proxBox.right.landTile ||
-            proxBox.downleft.landTile && !proxBox.down.landTile && !proxBox.left.landTile ||
-            proxBox.upleft.landTile && !proxBox.up.landTile && !proxBox.left.landTile)
-            return false;
-        // No opposing sides
-        if (proxBox.right.landTile && proxBox.left.landTile && !proxBox.up.landTile && !proxBox.down.landTile ||
-            proxBox.up.landTile && proxBox.down.landTile && !proxBox.right.landTile && !proxBox.left.landTile)
-            return false;
-        // No all-four-sides
-        if (proxBox.up.landTile && proxBox.right.landTile && proxBox.down.landTile && proxBox.left.landTile)
-            return false;
-
-        // Must have at least 1 side
-        return  (proxBox.up.landTile || proxBox.right.landTile || proxBox.down.landTile || proxBox.left.landTile);
-    },
-
-    /**
      * A blank object used for bordering the game map.
      * Has sparse details to help the tileset system configure itself near the borders.
      * type {Terrain}
      */
     Void: class VoidTile {
-        get landTile() { return false; }
-        static landTile = false;
+        get landTile() { return VoidTile.landTile; }
+        static get landTile() { return false; }
         shallowWaters = false;
     },
 
@@ -183,7 +198,6 @@ export var Terrain = {
         get type() { return PlainTile; }
         get serial() { return 0; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Plain"; }
@@ -200,7 +214,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
             this._transform.object = this._layer0;
 
@@ -218,6 +236,10 @@ export var Terrain = {
             let v = plainVariant();
             this._layer0.texture = PIXI.Texture.from(`plain-${v}.png`);
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -232,7 +254,6 @@ export var Terrain = {
         get type() { return RoadTile; }
         get serial() { return 1; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Road"; }
@@ -249,7 +270,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -277,6 +302,10 @@ export var Terrain = {
             v = fourDirectionalVariant(neighbors, RoadTile);
             this._layer1.texture = PIXI.Texture.from(`road-${v}.png`)
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -291,7 +320,6 @@ export var Terrain = {
         get type() { return WoodTile; }
         get serial() { return 2; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Wood"; }
@@ -308,7 +336,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -336,6 +368,10 @@ export var Terrain = {
             v = lineDirectionalVariant(neighbors, WoodTile);
             this._layer1.texture = PIXI.Texture.from(`wood-${v}.png`)
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -351,7 +387,6 @@ export var Terrain = {
         get type() { return MountainTile; }
         get serial() { return 3; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Mountain"; }
@@ -368,7 +403,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._layer1.anchor.y = 0.5;
             this._layer2.alpha = 0.25;
 
@@ -404,6 +443,10 @@ export var Terrain = {
 
             this._layer2.texture = PIXI.Texture.from(`shadow.png`);
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -417,7 +460,6 @@ export var Terrain = {
         get type() { return WastelandTile; }
         get serial() { return 4; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Wasteland"; }
@@ -434,7 +476,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
             this._transform.object = this._layer0;
 
@@ -452,6 +498,10 @@ export var Terrain = {
             let v = tileVariant(6);
             this._layer0.texture = PIXI.Texture.from(`wasteland-${v}.png`);
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -466,7 +516,6 @@ export var Terrain = {
         get type() { return RuinsTile; }
         get serial() { return 5; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Ruins"; }
@@ -483,7 +532,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -511,12 +564,18 @@ export var Terrain = {
             v = tileVariant(3);
             this._layer1.texture = PIXI.Texture.from(`ruin-${v}.png`);
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
     Bridge: class BridgeTile {
-        _layer0 = new PIXI.Sprite();
+        _layer0 = new PIXI.Container();
         _layer1 = new PIXI.Sprite();
+
+        oceanBridge = false;
 
         _transform;
         get transform() { return this._transform; }
@@ -524,9 +583,8 @@ export var Terrain = {
 
         get type() { return BridgeTile; }
         get serial() { return 6; }
-        get landTile() { return true; }
-        static landTile = true;
-        get shallowWaters() { return false; }
+        get landTile() { return false; }
+        shallowWaters = false;
 
         get name() { return "Bridge"; }
         get shortName() { return "Bridge"; }
@@ -542,7 +600,12 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            if (prevTile)
+                this.oceanBridge = !prevTile.landTile;
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -558,17 +621,27 @@ export var Terrain = {
             MapLayers['bottom'].removeChild(this._layer0);
             MapLayers['bottom'].removeChild(this._layer1);
 
-            this._layer0.destroy();
+            this._layer0.destroy(true);
             this._layer1.destroy();
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
-            // Bridge will be tough
-            // If land tile: use river
-            // If sea: use cliffs and shallows and stuff.
-            // How does DoR do it? What I'm doing seems harder than just... somehow putting
-            // a bridge ~over~ a sea/river tile. I dunno, man.
+            let v;
+
+            if (this.oceanBridge)
+                populateSeaLayer(this._layer0, neighbors);
+            else
+                v = fourDirectionalVariant(neighbors, Terrain.RiverTile, Terrain.SeaTile);
+                this._layer0.addChild( new PIXI.Sprite(Terrain.tilesheet().textures[`river-${v}.png`]) );
+
+            v = fourDirectionalVariant(neighbors, BridgeTile)
+            this._layer1.texture = PIXI.Texture.from(`bridge-${v}.png`);
+        }
+
+        static legalPlacement(neighbors) {
+            return (neighbors.center.type == Terrain.Sea ||
+                    neighbors.center.type == Terrain.River);
         }
     },
 
@@ -583,7 +656,6 @@ export var Terrain = {
         get type() { return RiverTile; }
         get serial() { return 7; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "River"; }
@@ -600,7 +672,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
             this._transform.object = this._layer0;
 
@@ -618,13 +694,15 @@ export var Terrain = {
             let v = fourDirectionalVariant(neighbors, RiverTile, Terrain.SeaTile);
             this._layer0.texture = PIXI.Texture.from(`river-${v}.png`);
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
     Sea: class SeaTile {
-        _layer0;
-        _layer1 = new PIXI.Sprite();
-        _layer2 = new PIXI.Sprite();
+        _layer0 = new PIXI.Container();
 
         _transform;
         get transform() { return this._transform; }
@@ -633,7 +711,6 @@ export var Terrain = {
         get type() { return SeaTile; }
         get serial() { return 8; }
         get landTile() { return false; }
-        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Sea"; }
@@ -650,59 +727,39 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
-            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
-            this._layer0 = new PIXI.AnimatedSprite(sheet.animations["sea"]);
-            this._layer0.animationSpeed = 0.1;
-            this._layer0.play();
+        constructor(prevTile = null) {
+            // stub
+        }
 
-            this._layer1.blendMode = PIXI.BLEND_MODES.ADD;
-            this._layer1.alpha = 0.1;
-
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
             layers.push(this._layer0);
-            layers.push(this._layer1);
-            layers.push(this._layer2);
             this._transform.object = layers;
 
             MapLayers['bottom'].addChild(this._layer0);
-            MapLayers['bottom'].addChild(this._layer1);
-            MapLayers['bottom'].addChild(this._layer2);
         }
 
         destroy() {
             MapLayers['bottom'].removeChild(this._layer0);
-            MapLayers['bottom'].removeChild(this._layer1);
-            MapLayers['bottom'].removeChild(this._layer2);
 
-            this._layer0.destroy();
-            this._layer1.destroy();
-            this._layer2.destroy();
+            this._layer0.destroy(true);
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
-            let v;
+            populateSeaLayer(this._layer0, neighbors);
+        }
 
-            if (this.shallowWaters) {
-                v = seaShallowVariant(neighbors);
-                if (v != "0000")
-                    this._layer1.texture = PIXI.Texture.from(`sea-shallow-${v}.png`);
-            }
-
-            v = seaCliffVariant(neighbors);
-            if (v != "0000")
-                this._layer2.texture = PIXI.Texture.from(`sea-cliff-${v}.png`);
+        static legalPlacement(neighbors) {
+            return true;
         }
     },
 
     /** type {Terrain} */
     Beach: class BeachTile {
-        _layer0;
-        _layer1 = new PIXI.Sprite();
-        _layer2 = new PIXI.Sprite();
+        _layer0 = new PIXI.Container();
 
         _transform;
         get transform() { return this._transform; }
@@ -711,7 +768,6 @@ export var Terrain = {
         get type() { return BeachTile; }
         get serial() { return 9; }
         get landTile() { return false; }
-        static landTile = false;
         get shallowWaters() { return true; }
 
         get name() { return "Beach"; }
@@ -728,52 +784,55 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
-            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
+        constructor(prevTile = null) {
+            // stub
+        }
 
-            this._layer0 = new PIXI.AnimatedSprite(sheet.animations["sea"]);
-            this._layer0.animationSpeed = 0.1;
-            this._layer0.play();
-
-            this._layer1.texture = PIXI.Texture.from('sea-shallow-1111.png');
-            this._layer1.blendMode = PIXI.BLEND_MODES.ADD;
-            this._layer1.alpha = 0.1;
-
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
-
-            let layers = [];
-            layers.push(this._layer0);
-            layers.push(this._layer1);
-            layers.push(this._layer2);
-            this._transform.object = layers;
+            this._transform.object = this._layer0;
 
             MapLayers['bottom'].addChild(this._layer0);
-            MapLayers['bottom'].addChild(this._layer1);
-            MapLayers['bottom'].addChild(this._layer2);
         }
 
         destroy() {
             MapLayers['bottom'].removeChild(this._layer0);
-            MapLayers['bottom'].removeChild(this._layer1);
-            MapLayers['bottom'].removeChild(this._layer2);
 
-            this._layer0.destroy();
-            this._layer1.destroy();
-            this._layer2.destroy();
+            this._layer0.destroy(true);
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
+            populateSeaLayer(this._layer0, neighbors);
+            this._layer0.removeChildAt(2);  // Shore line
+
             let v = beachVariant(neighbors);
-            this._layer2.texture = PIXI.Texture.from(`beach-${v}.png`);
+            this._layer0.addChild( new PIXI.Sprite(Terrain.tilesheet().textures[`beach-${v}.png`]) );
+        }
+
+        static legalPlacement(neighbors) {
+            // No isolated corners
+            if (neighbors.upright.landTile && !neighbors.up.landTile && !neighbors.right.landTile ||
+                neighbors.downright.landTile && !neighbors.down.landTile && !neighbors.right.landTile ||
+                neighbors.downleft.landTile && !neighbors.down.landTile && !neighbors.left.landTile ||
+                neighbors.upleft.landTile && !neighbors.up.landTile && !neighbors.left.landTile)
+                return false;
+            // No opposing sides
+            if (neighbors.right.landTile && neighbors.left.landTile && !neighbors.up.landTile && !neighbors.down.landTile ||
+                neighbors.up.landTile && neighbors.down.landTile && !neighbors.right.landTile && !neighbors.left.landTile)
+                return false;
+            // No all-four-sides
+            if (neighbors.up.landTile && neighbors.right.landTile && neighbors.down.landTile && neighbors.left.landTile)
+                return false;
+
+            // Must have at least 1 side
+            return  (neighbors.up.landTile || neighbors.right.landTile || neighbors.down.landTile || neighbors.left.landTile);
         }
     },
 
     /** type {Terrain} */
     RoughSea: class RoughSeaTile {
-        _layer0;
-        _layer1;
-        _layer2 = new PIXI.Sprite();
+        _layer0 = new PIXI.Container();
 
         _transform;
         get transform() { return this._transform; }
@@ -782,7 +841,6 @@ export var Terrain = {
         get type() { return RoughSeaTile; }
         get serial() { return 10; }
         get landTile() { return false; }
-        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Rough Sea"; }
@@ -799,59 +857,45 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
-            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
+        constructor(prevTile = null) {
+            // stub
+        }
 
-            this._layer0 = new PIXI.AnimatedSprite(sheet.animations["sea"]);
-            this._layer0.animationSpeed = 0.1;
-            this._layer0.play();
-
-            this._layer1 = new PIXI.AnimatedSprite(sheet.animations["rough"]);
-            this._layer1.animationSpeed = 0.1;
-            this._layer1.play();
-
-            this._layer2.blendMode = PIXI.BLEND_MODES.ADD;
-            this._layer2.alpha = 0.1;
-
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
-
-            let layers = [];
-            layers.push(this._layer0);
-            layers.push(this._layer1);
-            layers.push(this._layer2);
-            this._transform.object = layers;
+            this._transform.object = this._layer0;
 
             MapLayers['bottom'].addChild(this._layer0);
-            MapLayers['bottom'].addChild(this._layer1);
-            MapLayers['bottom'].addChild(this._layer2);
         }
 
         destroy() {
             MapLayers['bottom'].removeChild(this._layer0);
-            MapLayers['bottom'].removeChild(this._layer1);
-            MapLayers['bottom'].removeChild(this._layer2);
 
-            this._layer0.destroy();
-            this._layer1.destroy();
-            this._layer2.destroy();
+            this._layer0.destroy(true);
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
-            if (this.shallowWaters) {
-                let v = seaShallowVariant(neighbors);
-                if (v != "0000")
-                    this._layer2.texture = PIXI.Texture.from(`sea-shallow-${v}.png`);
-            }
+            populateSeaLayer(this._layer0, neighbors);
+            this._layer0.removeChildAt(2);  // Shore line
+
+            let anim = new PIXI.AnimatedSprite(Terrain.tilesheet().animations["rough"]);
+            anim.animationSpeed = 0.125;
+            anim.play();
+            this._layer0.addChildAt(anim, 1);
+        }
+
+        static legalPlacement(neighbors) {
+            let r = true;
+            neighbors.list.forEach( tile => { if (tile.landTile) r = false; } );
+            return r;
         }
     },
 
     /** type {Terrain} */
     Mist: class MistTile {
-        _layer0;
+        _layer0 = new PIXI.Container();
         _layer1 = new PIXI.Sprite();
-        _layer2 = new PIXI.Sprite();
-        _layer3 = new PIXI.Sprite();
 
         _transform;
         get transform() { return this._transform; }
@@ -860,7 +904,6 @@ export var Terrain = {
         get type() { return MistTile; }
         get serial() { return 11; }
         get landTile() { return false; }
-        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Mist"; }
@@ -877,70 +920,50 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
-            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
+        constructor(prevTile = null) {
+            // stub
+        }
 
-            this._layer0 = new PIXI.AnimatedSprite(sheet.animations['sea']);
-            this._layer0.animationSpeed = 0.1;
-            this._layer0.play();
-
-            this._layer1.blendMode = PIXI.BLEND_MODES.ADD;
-            this._layer1.alpha = 0.1;
-
-            this._layer3.anchor.y = 0.5;
-            this._layer3.alpha = 0.75;
+        init(transform = null) {
+            this._layer1.anchor.y = 0.5;
+            this._layer1.alpha = 0.75;
 
             this._transform = transform || new LowResTransform();
 
             let layers = [];
             layers.push(this._layer0);
             layers.push(this._layer1);
-            layers.push(this._layer2);
-            layers.push(this._layer3);
             this._transform.object = layers;
 
             MapLayers['bottom'].addChild(this._layer0);
-            MapLayers['bottom'].addChild(this._layer1);
-            MapLayers['bottom'].addChild(this._layer2);
-            MapLayers['top'].addChild(this._layer3);
+            MapLayers['top'].addChild(this._layer1);
         }
 
         destroy() {
             MapLayers['bottom'].removeChild(this._layer0);
-            MapLayers['bottom'].removeChild(this._layer1);
-            MapLayers['bottom'].removeChild(this._layer2);
-            MapLayers['top'].removeChild(this._layer3);
+            MapLayers['top'].removeChild(this._layer1);
 
-            this._layer0.destroy();
+            this._layer0.destroy(true);
             this._layer1.destroy();
-            this._layer2.destroy();
-            this._layer3.destroy();
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
-            let v;
+            populateSeaLayer(this._layer0, neighbors);
 
-            if (this.shallowWaters) {
-                v = seaShallowVariant(neighbors);
-                if (v != "0000")
-                    this._layer1.texture = PIXI.Texture.from(`sea-shallow-${v}.png`);
-            }
+            let v = lineDirectionalVariant(neighbors, MistTile);
+            this._layer1.texture = PIXI.Texture.from(`mist-${v}.png`);
+        }
 
-            v = seaCliffVariant(neighbors);
-            if (v != "0000")
-                this._layer2.texture = PIXI.Texture.from(`sea-cliff-${v}.png`);
-
-            v = lineDirectionalVariant(neighbors, MistTile);
-            this._layer3.texture = PIXI.Texture.from(`mist-${v}.png`);
+        static legalPlacement(neighbors) {
+            return true;
         }
     },
 
     /** type {Terrain} */
     Reef: class ReefTile {
-        _layer0;
+        _layer0 = new PIXI.Container();
         _layer1 = new PIXI.Sprite();
-        _layer2 = new PIXI.Sprite();
 
         _transform;
         get transform() { return this._transform; }
@@ -949,7 +972,6 @@ export var Terrain = {
         get type() { return ReefTile; }
         get serial() { return 12; }
         get landTile() { return false; }
-        static landTile = false;
         shallowWaters = false;
 
         get name() { return "Reef"; }
@@ -966,49 +988,43 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
-            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
+        constructor(prevTile = null) {
+            // stub
+        }
 
-            this._layer0 = new PIXI.AnimatedSprite(sheet.animations["sea"]);
-            this._layer0.animationSpeed = 0.1;
-            this._layer0.play();
-
-            this._layer1.blendMode = PIXI.BLEND_MODES.ADD;
-            this._layer1.alpha = 0.1;
-
+        init(transform = null) {
             let v = tileVariant(4);
-            this._layer2.texture = PIXI.Texture.from(`reef-${v}.png`);
+            this._layer1.texture = PIXI.Texture.from(`reef-${v}.png`);
 
             this._transform = transform || new LowResTransform();
 
             let layers = [];
             layers.push(this._layer0);
             layers.push(this._layer1);
-            layers.push(this._layer2);
             this._transform.object = layers;
 
             MapLayers['bottom'].addChild(this._layer0);
             MapLayers['bottom'].addChild(this._layer1);
-            MapLayers['bottom'].addChild(this._layer2);
         }
 
         destroy() {
             MapLayers['bottom'].removeChild(this._layer0);
             MapLayers['bottom'].removeChild(this._layer1);
-            MapLayers['bottom'].removeChild(this._layer2);
 
-            this._layer0.destroy();
+            this._layer0.destroy(true);
             this._layer1.destroy();
-            this._layer2.destroy();
             this._transform.destroy();
         }
 
         orientSelf(neighbors) {
-            if (this.shallowWaters) {
-                let v = seaShallowVariant(neighbors);
-                if (v != "0000")
-                    this._layer1.texture = PIXI.Texture.from(`sea-shallow-${v}.png`);
-            }
+            populateSeaLayer(this._layer0, neighbors);
+            this._layer0.removeChildAt(2);  // Shore line
+        }
+
+        static legalPlacement(neighbors) {
+            let r = true;
+            neighbors.list.forEach( tile => { if (tile.landTile) r = false; } );
+            return r;
         }
     },
 
@@ -1024,7 +1040,6 @@ export var Terrain = {
         get type() { return FireTile; }
         get serial() { return 13; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Fire"; }
@@ -1041,12 +1056,14 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
-            let sheet = Game().app.loader.resources['NormalMapTilesheet'].spritesheet;
+        constructor(prevTile = null) {
+            // stub
+        }
 
+        init(transform = null) {
             this._layer0.texture = PIXI.Texture.from(`plain-8.png`);
 
-            this._layer1 = new PIXI.AnimatedSprite(sheet.animations['fire']);
+            this._layer1 = new PIXI.AnimatedSprite(Terrain.tilesheet().animations['fire']);
             this._layer1.animationSpeed = 0.2;
             this._layer1.play();
             this._layer1.anchor.y = 0.535;  // TODO: Fix sprite
@@ -1074,6 +1091,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1081,15 +1102,16 @@ export var Terrain = {
         _layer0 = new PIXI.Sprite();
         _layer1 = new PIXI.Sprite();
 
+        oceanMeteor = false;
+
         _transform;
         get transform() { return this._transform; }
         set transform(transform) { this._transform.copy(transform); }
 
         get type() { return MeteorTile; }
         get serial() { return 14; }
-        get landTile() { return true; }
-        static landTile = true;
-        get shallowWaters() { return false; }
+        get landTile() { return !this.oceanMeteor; }
+        get shallowWaters() { return true; }
 
         get name() { return "Meteor"; }
         get shortName() { return "Meteor"; }
@@ -1109,7 +1131,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            this.oceanMeteor = !prevTile.landTile;
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1133,6 +1159,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1140,15 +1170,16 @@ export var Terrain = {
         _layer0 = new PIXI.Sprite();
         _layer1 = new PIXI.Sprite();
 
+        oceanPlasma = false;
+
         _transform;
         get transform() { return this._transform; }
         set transform(transform) { this._transform.copy(transform); }
 
         get type() { return PlasmaTile; }
         get serial() { return 15; }
-        get landTile() { return true; }
-        static landTile = true;
-        get shallowWaters() { return false; }
+        get landTile() { return !this.oceanPlasma; }
+        shallowWaters = false;
 
         get name() { return "Plasma"; }
         get shortName() { return "Plasma"; }
@@ -1164,7 +1195,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            this.oceanPlasma = !prevTile.landTile;
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1188,6 +1223,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1202,7 +1241,6 @@ export var Terrain = {
         get type() { return PipelineTile; }
         get serial() { return 16; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Pipeline"; }
@@ -1219,7 +1257,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1243,6 +1285,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return neighbors.center.landTile;
+        }
     },
 
     /** type {Terrain} */
@@ -1257,7 +1303,6 @@ export var Terrain = {
         get type() { return PipeSeamTile; }
         get serial() { return 17; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Pipe Seam"; }
@@ -1278,7 +1323,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1302,6 +1351,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return neighbors.center.landTile;
+        }
     },
 
     /** type {Terrain} */
@@ -1316,7 +1369,6 @@ export var Terrain = {
         get type() { return HQTile; }
         get serial() { return 18; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "HQ"; }
@@ -1337,7 +1389,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1361,6 +1417,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1375,7 +1435,6 @@ export var Terrain = {
         get type() { return CityTile; }
         get serial() { return 19; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "City"; }
@@ -1396,7 +1455,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             let v = plainVariant();
             this._layer0.texture = PIXI.Texture.from(`plain-${v}.png`);
 
@@ -1426,6 +1489,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1440,7 +1507,6 @@ export var Terrain = {
         get type() { return ComTowerTile; }
         get serial() { return 20; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Com Tower"; }
@@ -1461,7 +1527,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1485,6 +1555,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1499,7 +1573,6 @@ export var Terrain = {
         get type() { return RadarTile; }
         get serial() { return 21; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Radar"; }
@@ -1520,7 +1593,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1544,6 +1621,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1558,7 +1639,6 @@ export var Terrain = {
         get type() { return SiloTile; }
         get serial() { return 22; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Silo"; }
@@ -1579,7 +1659,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1603,6 +1687,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1617,7 +1705,6 @@ export var Terrain = {
         get type() { return FactoryTile; }
         get serial() { return 23; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Factory"; }
@@ -1638,7 +1725,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1662,6 +1753,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1676,7 +1771,6 @@ export var Terrain = {
         get type() { return AirportTile; }
         get serial() { return 24; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Airport"; }
@@ -1697,7 +1791,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1721,6 +1819,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1735,7 +1837,6 @@ export var Terrain = {
         get type() { return PortTile; }
         get serial() { return 25; }
         get landTile() { return false; }
-        static landTile = false;
         get shallowWaters() { return false; }
 
         get name() { return "Port"; }
@@ -1756,7 +1857,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1780,6 +1885,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1794,7 +1903,6 @@ export var Terrain = {
         get type() { return TempAirptTile; }
         get serial() { return 26; }
         get landTile() { return true; }
-        static landTile = true;
         get shallowWaters() { return false; }
 
         get name() { return "Temp Airpt"; }
@@ -1815,7 +1923,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1839,6 +1951,10 @@ export var Terrain = {
         orientSelf(neighbors) {
             // stub
         }
+
+        static legalPlacement(neighbors) {
+            return true;
+        }
     },
 
     /** type {Terrain} */
@@ -1853,7 +1969,6 @@ export var Terrain = {
         get type() { return TempPortTile; }
         get serial() { return 27; }
         get landTile() { return false; }
-        static landTile = false;
         get shallowWaters() { return false; }
 
         get name() { return "Temp Port"; }
@@ -1874,7 +1989,11 @@ export var Terrain = {
             return costs[type];
         }
 
-        constructor(transform = null) {
+        constructor(prevTile = null) {
+            // stub
+        }
+
+        init(transform = null) {
             this._transform = transform || new LowResTransform();
 
             let layers = [];
@@ -1897,6 +2016,10 @@ export var Terrain = {
 
         orientSelf(neighbors) {
             // stub
+        }
+
+        static legalPlacement(neighbors) {
+            return true;
         }
     },
 }

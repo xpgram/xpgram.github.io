@@ -23,7 +23,8 @@ export class Battle {
     constructor(game) {
         this.game = game;
         this.camera = new Camera();
-        this.camera.scene = this.game.scene;    // Should be stage.scene, but refactors, yo
+        this.camera.scene = this.game.scene;
+        this.camera.zoom = 15/18;
     }
 
     // Used to load all required assets.
@@ -49,7 +50,7 @@ export class Battle {
             let sheet = this.game.app.loader.resources['NormalMapTilesheet'].spritesheet;
 
             // Create a map—easy
-            let map = new Map(40,10);
+            let map = new Map(50,12);
 
             // Creates a text object with my imported bitmap font.
             this.scrollingText = new PIXI.BitmapText(this.msgContent, { font: '8px TecTacRegular', align: 'left'});

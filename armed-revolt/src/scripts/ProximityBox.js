@@ -8,6 +8,7 @@
  */
 export class ProximityBox {
     list = [];
+    _center;
 
     /**
      * @param {any[]} list 
@@ -18,6 +19,9 @@ export class ProximityBox {
         if (list.length < 9)
             throw "Given list of proximal points is too few.";
 
+        this._center = list[4];
+        
+        list.splice(4,1);
         this.list = list;
     }
 
@@ -25,9 +29,9 @@ export class ProximityBox {
     get left() { return this.list[1]; }
     get downleft() { return this.list[2]; }
     get up() { return this.list[3]; }
-    get center() { return this.list[4]; }
-    get down() { return this.list[5]; }
-    get upright() { return this.list[6]; }
-    get right() { return this.list[7]; }
-    get downright() { return this.list[8]; }
+    get center() { return this._center; }
+    get down() { return this.list[4]; }
+    get upright() { return this.list[5]; }
+    get right() { return this.list[6]; }
+    get downright() { return this.list[7]; }
 }

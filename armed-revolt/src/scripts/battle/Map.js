@@ -42,7 +42,7 @@ export class Map {
         this.layers.init();
         this._constructMap(width, height); // 15,10 will eventually be given by some kind of map file. I just realized this can be JSON. Hell yeah.
         this._generateMap();        // Generates a pleasant-looking map.
-        this._instantiateMap();     // Turn all types into objects.
+        this._initializeMap();     // Turn all types into objects.
         this._configureMap();       // Preliminary setup for things like sea-tiles knowing they're shallow.
         this._blendMap();           // Ask each tile to formally align themselves with their surroundings (e.g.: sea(neighbors) → shallow/cliff sprites)
     }
@@ -90,54 +90,108 @@ export class Map {
      * Implementation is a testing ground, don't get too hung up over the silliness of it.
      */
     _generateMap() {
+        // Build a map of tiles based on chance-percentage spawns.
         for (let x = 0; x < this.width; x++)
         for (let y = 0; y < this.height; y++) {
-            /** @type {Terrain} */
-            let newType;
-
-            let r = Math.random();
-            if (r < 0.25) newType = Terrain.Plain;
-            else if (r < 0.60) newType = Terrain.Sea;
-            else if (r < 0.625) newType = Terrain.Fire;
-            else if (r < 0.7) newType = Terrain.Mountain;
-            else if (r < 0.75) newType = Terrain.City;
-            else if (r < 0.8) newType = Terrain.Wood;
-            else if (r < 0.825) newType = Terrain.Wasteland;
-            else if (r < 0.85) newType = Terrain.Ruins;
-            else if (r < 0.9) newType = Terrain.Road;
-            else if (r < 0.95) newType = Terrain.River;
-            else if (r < 1.0) newType = Terrain.Mist;
-
-            this.squareAt({x: x, y: y}).terrain = newType;
+            this.squareAt({x:x, y:y}).terrain = new Terrain.Plain();
         }
 
-        for (let i = 0; i < 4; i++) {
-            let x = Math.floor(1 + Math.random()*(this.width - 2));
-            let y = Math.floor(1 + Math.random()*(this.height - 2));
-            let pos = {x: x, y: y};
-            let newType = (Math.random() < 0.5) ? Terrain.Reef : Terrain.RoughSea;
-
-            for (let xx = -1; xx <= 1; xx++)
-            for (let yy = -1; yy <= 1; yy++)
-                this.squareAt({x: pos.x + xx, y: pos.y + yy}).terrain = Terrain.Sea;
-            this.squareAt(pos).terrain = newType;
+        for (let x = 2; x < this.width-2; x++)
+        for (let y = 2; y < this.height-2; y++) {
+            if (Math.random() < 0.01) {
+                for (let xx = -3; xx < 4; xx++)
+                for (let yy = -3; yy < 4; yy++) {
+                    let pos = {x:xx+x, y:yy+y};
+                    this.squareAt(pos).terrain = new Terrain.Sea();
+                }
+            }
         }
 
-        for (let x = 0; x < this.width; x++)
+        this._generateTile(Terrain.Sea,      [.02,.60,.70,.50,.60,.70,.70,.70,.70], 1, .10);
+        this._generateTile(Terrain.Mountain, [.10,.15,.15,.15,.25,.30,.40,.40,.40],.4, 1);
+        this._generateTile(Terrain.Wood,     [.08,.30,.30,.20,.20,.20,.20,.20,.20],.4, 1);
+        this._generateTile(Terrain.City,     [.05,.05,.05,.05,.05,.05,.05,.05,.05],.3, 1);
+        this._generateTile(Terrain.Ruins,    [.03,.05,.05,.05,.05,.05,.05,.05,.05],.3, 1);
+        this._generateTile(Terrain.Wasteland,[.05,.15,.15,.15,.25,.30,.40,.40,.40],.4, 1);
+        this._generateTile(Terrain.Road,     [.10,.98,.90,.70,.40,.05,.05,.05,.05],.4, .35);
+        this._generateTile(Terrain.River,    [.05,.90,.80,.60,.40,.05,.05,.05,.05],.4, .35);
+        this._generateTile(Terrain.Bridge,   [.05,.98,.90,.70,.40,.05,.05,.05,.05],.4, .35);
+        this._generateTile(Terrain.Fire,     [.02,.02,.02,.02,.02,.02,.02,.02,.02],.3, 1);
+        this._generateTile(Terrain.Beach,    [.10,.70,.90,.50,.20,.20,.20,.20,.20],.4, .7);
+        this._generateTile(Terrain.Mist,     [.03,.50,.70,.50,.50,.20,.20,.20,.20],.3, .7);
+        this._generateTile(Terrain.RoughSea, [.20,.20,.20,.10,.05,.05,.05,.05,.05],.3, .7);
+        this._generateTile(Terrain.Reef,     [.20,.20,.20,.05,.05,.05,.05,.05,.05],.3, 1);
+    }
+
+    _generateTile(type, chanceMatrix, existingLandmarkRate, diagonalRate) {
+        // Generate a list of indices to access the board
+        let points = [];
+        for (let x = 0; x < this.width; x++) {
         for (let y = 0; y < this.height; y++) {
-            let pos = {x: x, y: y};
-
-            if (this.squareAt(pos).terrain == Terrain.Sea &&
-                Terrain.beachLegal(this.neighborsAt(pos)))
-                if (Math.random() < 0.5)
-                    this.squareAt(pos).terrain = Terrain.Beach;
+            points.push({x:x,y:y});
+        }}
+        // Randomize list of points on the board — This should provide better seed → layout generation.
+        for (let i = 0; i < points.length; i++) {
+            // Randomly select two candidates
+            let a = Math.floor(Math.random()*points.length);
+            let b = Math.floor(Math.random()*points.length);
+            // Skip if swap is pointless
+            if (a == b)
+                continue;
+            // Swap
+            let tmp = points[a];
+            points[a] = points[b];
+            points[b] = tmp;
         }
+
+        function multipass(parent, multipassRate) {
+            for (let i = 0; i < points.length; i++) {
+                // Get context and skip if pointless
+                let pos = points[i];
+                let neighbors = parent.neighborsAt(pos);
+                if (type == neighbors.center.type) continue;
+                if (type.legalPlacement(neighbors) == false) continue;
+
+                // Build our new tile
+                let prevTile = parent.squareAt(pos).terrain;
+                let newTile = new type(prevTile);
+
+                // Neighbors should generate a score, not a flat rate.
+                // But, I should also keep the flat rate; it's good for lines.
+
+                // Calculate final chance ratio
+                let sameKindNeighbors = neighbors.list.filter(tile => { return (tile.type == type); }).length;
+                let ratio = chanceMatrix[sameKindNeighbors];
+                if (neighbors.left.type != type &&
+                    neighbors.right.type != type &&
+                    neighbors.up.type != type &&
+                    neighbors.down.type != type)
+                    ratio *= diagonalRate;
+                if (newTile.landTile != neighbors.center.landTile &&
+                    type != Terrain.Sea)
+                    ratio *= 0.05;
+                if (neighbors.center.type != Terrain.Plain &&
+                    neighbors.center.type != Terrain.Sea)
+                    ratio *= existingLandmarkRate;
+                ratio *= multipassRate;
+
+                // Finally, lay your cards on the table
+                if (Math.random() < ratio) {
+                    parent.squareAt(pos).terrain = newTile;
+                }
+            }
+        }
+
+        // Add terrain type to map
+        multipass(this, 1);
+        multipass(this, 0.7);
+        multipass(this, 0.4);
     }
 
     /**
-     * Turns the finalized map of terrain types into a map of tile objects.
+     * Asks each tile on the board to set up its graphics objects and add them to the scene.
      */
-    _instantiateMap() {
+    _initializeMap() {
         let tileSize = Game().display.standardLength;
 
         for (let x = 0; x < this.width; x++)
@@ -146,12 +200,11 @@ export class Map {
             let trans = new LowResTransform();
             trans.position.x = x * tileSize;
             trans.position.y = y * tileSize;
-            trans.position.z = (trans.position.y - trans.position.x) * 10;  // Leaves room for multi-layered tiles
+            trans.position.z = (trans.position.y - trans.position.x) * 10;  // Leaves room for units and highlights, etc.
 
-            // Instantiate
+            // Initialize
             let pos = {x: x, y: y};
-            let terrainType = this.squareAt(pos).terrain;
-            this.squareAt(pos).terrain = new terrainType(trans);
+            this.squareAt(pos).terrain.init(trans);
         }
 
         // Apply z-ordering. Bottom layer never overlaps——is fine.
@@ -172,7 +225,8 @@ export class Map {
             if (square.terrain.landTile ||
                 square.terrain.type == Terrain.Mist ||
                 square.terrain.type == Terrain.Reef ||
-                square.terrain.type == Terrain.Beach) {
+                square.terrain.type == Terrain.Beach ||
+                square.terrain.type == Terrain.Meteor) {
                 let neighbors = this.neighborsAt(pos);
                 for (let i = 0; i < neighbors.list.length; i++) {
                     if (!neighbors.list[i].landTile &&
