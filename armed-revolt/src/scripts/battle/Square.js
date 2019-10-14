@@ -21,8 +21,19 @@ export class Square {
     static hiddenShift = 4;
     static arrowFromShift = 5;
     static arrowToShift = 8;
+    static xCoordShift = 11;
+    static yCoordShift = 19;
+
     static boolLength = 1;
     static directionLength = 3;
+    static coordinateLength = 8;
+
+    static MAX_COORDS = 255;
+
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
+    }
 
     /**
      * Destroys this object and its children.
@@ -53,7 +64,7 @@ export class Square {
         let mask = Math.pow(2,length) - 1;  // Get us a series of 1 bits.
         this._displayInfo = this._displayInfo & !(mask << shift);
         this._displayInfo += (value & mask) << shift;
-        updateHighlight();
+        this.updateHighlight();
     }
 
     /**
@@ -98,6 +109,24 @@ export class Square {
     get arrowTo() {
         return this._displayInfoGet(Square.directionLength, Square.arrowToShift);
     }
+    /**
+     * @type {number} Represents this square's x-coordinate on the map.
+     */
+    get x() {
+        return this._displayInfoGet(Square.coordinateLength, Square.xCoordShift);
+    }
+    /**
+     * @type {number} Represents this square's y-coordinate on the map.
+     */
+    get y() {
+        return this._displayInfoGet(Square.coordinateLength, Square.yCoordShift);
+    }
+    /**
+     * @type {point} A point object representing this square's positional coordinates on the map.
+     */
+    get pos() {
+        return {x: this.x, y: this.y};
+    }
 
     set moveable(value) {
         this._displayInfoSet(Square.boolLength, Square.moveableShift, value);
@@ -119,6 +148,16 @@ export class Square {
     }
     set arrowTo(value) {
         this._displayInfoSet(Square.directionLength, Square.arrowToShift, value);
+    }
+    set x(value) {
+        this._displayInfoSet(Square.coordinateLength, Square.xCoordShift);
+    }
+    set y(value) {
+        this._displayInfoSet(Square.coordinateLength, Square.yCoordShift);
+    }
+    set pos(point) {
+        this.x = point.x;
+        this.y = point.y;
     }
 
     updateHighlight() {

@@ -6,21 +6,23 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;                // Gives us 
 
 class GameInstance {
 
+    scene = new PIXI.Container();
+
     display = {
         standardLength: 16,
 
         // Internal resolution (GBA)
-        internalWidth: 240,
-        internalHeight: 160,
+        renderWidth: 240,
+        renderHeight: 160,
 
         // External resolution, and the scale factor (ratio) between this and the above.
         scale: 1,
-        get width() { return this.internalWidth * this.scale; },
-        get height() { return this.internalHeight * this.scale; },
+        get width() { return this.renderWidth * this.scale; },
+        get height() { return this.renderHeight * this.scale; },
 
         // Callback function which resizes the canvas to the containing div element on window resize.
         resize: function(app) {
-            this.scale = app.view.parentNode.clientWidth / this.internalWidth;  // Update internal to final resolution scale.
+            this.scale = app.view.parentNode.clientWidth / this.renderWidth;    // Update internal to final resolution scale.
             app.renderer.resize(this.width, this.height);                       // Resize PIXI's renderer.
             app.stage.scale.x = app.stage.scale.y = this.scale;                 // Resize our 'upscaler.'
         },
@@ -53,6 +55,9 @@ class GameInstance {
 
         // Add the main loop to PIXI's ticker. This updates 60 times per second by default, unless your PC sucks.
         this.app.ticker.add((delta) => {this.loop(delta)});
+
+        // Add the scene container (stage set) to the stage. Stage → Browser Window, Scene → Game Viewport
+        this.app.stage.addChild(this.scene);
     }
 
     // Main update loop. Mostly runs whichever state is currently assigned.

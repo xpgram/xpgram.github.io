@@ -2,20 +2,28 @@
 
 import { LowResTransform as Transform } from "../scripts/LowResTransform.js";
 import { Map } from "../scripts/battle/Map.js";
+import { Camera } from "../scripts/Camera.js";
+import { MapLayers } from "../scripts/battle/MapLayers.js";
+import { Game } from "../main.js";
 
 export class Battle {
     mustInitialize = true;  // Signals the game skeleton that this state needs to initalize before use.
     ready = false;          // The way I'm doing things currently, I need this silly signal that it's okay to call update()
     ending = false;         // Signals the game skeleton that this state is closing.
     game;                   // Reference to the global game object.
+    camera;                 // Reference to the camera object giving players that visceral, Black Hawk Down, Full Metal Jacket cinematic feeling.
+    time = 0;   // For testing——accumulated
 
     scrollingText;
     textTransform;
     point = new PIXI.Point();
 
     // Accepts a reference to the global game instance.
+    // TODO: Don't pass in constructor, use Game() ——Refactor this class.
     constructor(game) {
         this.game = game;
+        this.camera = new Camera();
+        this.camera.scene = this.game.scene;    // Should be stage.scene, but refactors, yo
     }
 
     // Used to load all required assets.
@@ -41,7 +49,7 @@ export class Battle {
             let sheet = this.game.app.loader.resources['NormalMapTilesheet'].spritesheet;
 
             // Create a map—easy
-            let map = new Map(15,10);
+            let map = new Map(40,10);
 
             // Creates a text object with my imported bitmap font.
             this.scrollingText = new PIXI.BitmapText(this.msgContent, { font: '8px TecTacRegular', align: 'left'});
@@ -69,7 +77,9 @@ export class Battle {
 
     // Main program logic — the part that runs itself.
     update(delta) {
+        this.time += delta;
         this.transform.position.y -= 0.08 * delta;
+        this.camera.x = 20*16 + Math.sin(Math.PI*0.001*this.time)*16*12;
     }
 
     // Used to close data structures or invisible things maybe.

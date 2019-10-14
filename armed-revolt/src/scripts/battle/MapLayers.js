@@ -28,7 +28,7 @@ export var MapLayers = {
         if (this.destroyed) {
             MapLayers.layerNames.forEach(layer => {
                 MapLayers[layer] = new PIXI.Container();
-                Game().app.stage.addChild(this[layer]);
+                Game().scene.addChild(this[layer]);
             });
             this.destroyed = false;
         }
@@ -40,7 +40,7 @@ export var MapLayers = {
     destroy() {
         if (!this.destroyed) {
             MapLayers.layerNames.forEach(layer => {
-                Game().app.stage.removeChild(this[layer]);
+                Game().scene.removeChild(this[layer]);
                 this[layer].destroy({ children: true, textures: true });
             });
             this.destroyed = true;

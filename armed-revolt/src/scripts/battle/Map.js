@@ -40,7 +40,7 @@ export class Map {
      */
     constructor(width, height) {
         this.layers.init();
-        this._constructMap(15, 10); // 15,10 will eventually be given by some kind of map file. I just realized this can be JSON. Hell yeah.
+        this._constructMap(width, height); // 15,10 will eventually be given by some kind of map file. I just realized this can be JSON. Hell yeah.
         this._generateMap();        // Generates a pleasant-looking map.
         this._instantiateMap();     // Turn all types into objects.
         this._configureMap();       // Preliminary setup for things like sea-tiles knowing they're shallow.
@@ -64,6 +64,10 @@ export class Map {
      * @param {number} height 
      */
     _constructMap(width, height) {
+        // Enforce maximum
+        if (width > Square.MAX_COORDS || height > Square.MAX_COORDS)
+            throw "Map dimensions are too big! Cannot handle without increasing Square's memory allocation for coordinates."
+
         // Include a null-object border around the map.
         width += 2;
         height += 2;
@@ -72,7 +76,7 @@ export class Map {
         for (let x = 0; x < width; x++) {
             this._board[x] = {};
             for (let y = 0; y < height; y++) {
-                this._board[x][y] = new Square();
+                this._board[x][y] = new Square(x, y);
 
                 // Add null-object border
                 if (x == 0 || x == (width - 1) || y == 0 || y == (height - 1))

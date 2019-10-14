@@ -114,9 +114,8 @@ export class LowResTransform {
     get position() {
         return this._position;
     }
-    set position(obj) {
-        if (obj instanceof PIXI.Point)      // TODO: Check if obj has properties x and y, if not _throw an error_.
-            this.position.set(obj.x, obj.y);
+    set position(point) {
+        this.position.set(point.x, point.y);
     }
     _position = ((parent) => { return {
         _x: 0,  // x-coordinate
@@ -208,9 +207,13 @@ export class LowResTransform {
     
     /**
      * A 2D vector which represents the proportional transformation of the object.
+     * @type {PIXI.Point}
      */
     get scale() {
         return this._scale;
+    }
+    set scale(point) {
+        this._scale.set(point.x, point.y);
     }
     _scale = ((parent) => { return {
         _x: 1,
