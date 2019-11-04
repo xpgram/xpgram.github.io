@@ -135,6 +135,15 @@
 	"sourceSize": {"w":16,"h":16},
 	"anchor": {"x":0,"y":0}
 },
+"beach-2111.png":
+{
+	"frame": {"x":209,"y":27,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"anchor": {"x":0,"y":0}
+},
 "beach-0112.png":
 {
 	"frame": {"x":194,"y":45,"w":16,"h":16},
@@ -243,6 +252,15 @@
 	"sourceSize": {"w":16,"h":16},
 	"anchor": {"x":0,"y":0}
 },
+"beach-1211.png":
+{
+	"frame": {"x":195,"y":63,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"anchor": {"x":0,"y":0}
+},
 "beach-1020.png":
 {
 	"frame": {"x":52,"y":49,"w":16,"h":14},
@@ -288,6 +306,15 @@
 	"sourceSize": {"w":16,"h":16},
 	"anchor": {"x":0,"y":0}
 },
+"beach-1121.png":
+{
+	"frame": {"x":213,"y":81,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"anchor": {"x":0,"y":0}
+},
 "beach-1102.png":
 {
 	"frame": {"x":198,"y":99,"w":16,"h":16},
@@ -298,6 +325,15 @@
 	"anchor": {"x":0,"y":0}
 },
 "beach-1110.png":
+{
+	"frame": {"x":216,"y":99,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"anchor": {"x":0,"y":0}
+},
+"beach-1112.png":
 {
 	"frame": {"x":216,"y":99,"w":16,"h":16},
 	"rotated": false,
