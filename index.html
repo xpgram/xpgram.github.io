@@ -112,6 +112,8 @@ Some projects to consider showing off:
                 <p>C# / .NET Framework / C++ / Java / Python / HTML5 / CSS3 / Javascript / TSQL</p>
                 <p class="mb-1">Tools</p>
                 <p>Visual Studio / Eclipse / Unity / SSMS</p>
+                <p class="mb-1">Libraries</p>
+                <p>Pixi.js</p>
               </div>
             </div>
 
@@ -144,24 +146,20 @@ Some projects to consider showing off:
 
               <a class="link text-xpg-light text-nowrap" href="./armed-revolt/game.html" target="_blank">Advance Wars Clone <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
               <p class="text-xpg-light xpg-project-desc">
-                Specifically Days of Ruin. Still in early stages; proper play has yet to be implemented. This project serves several purposes, but chief among them is that it will be
-                adapted into my own work once it's sophisticated enough.<br>
+                Still in early stages; proper play has yet to be implemented, but features a complete terrain and unit set, randomly generated maps and state-switching to manage player turns.
+                This project will eventually be unlisted for the obvious legal reasons, but the work will live on in my own project.<br>
               </p>
 
               <a class="link text-xpg-light text-nowrap" href="https://github.com/xpgram/budgetboy" target="_blank">Budgetboy <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
               <p class="text-xpg-light xpg-project-desc">
-                A CLI script which, if you tell it what your bills are, will tell you when they're due forever.
+                A CLI script which, if you tell it what your bills are, will tell you when they're due forever. I use it sometimes to estimate savings and test budget outcomes.
               </p>
 
               <a class="link text-xpg-light text-nowrap" href="https://github.com/xpgram/passwordboy" target="_blank">Passwordboy <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
               <p class="text-xpg-light xpg-project-desc">
                 A CLI script that manages a list of passwords.<br>
-                Probably not better than LastPass. (Also, currently broken for some reason.)
+                Probably not better than LastPass.
               </p>
-              
-              <!-- Make this link to a page with a Python interpreter built-in -->
-              <!-- Apparently, this will require AJAX, and significant amounts of it. Plus other things. -->
-              <!-- I could at least link to a page with a collection of pictures. -->
               
               <br> <!-- Subsection Break -->
 
@@ -185,8 +183,13 @@ Some projects to consider showing off:
 
     <!-- Copyright (Ha!) -->
     <footer id="footer" class="container-fluid bg-primary bg-xpg">
-      <h5 class="text-xpg-light text-right p-1">&copy; Dei Valko &nbsp;|&nbsp; 2019</h5>
+      <h5 class="text-xpg-light text-right p-1">&copy; Dei Valko &nbsp;|&nbsp; <span id="current-year"></span></h5>
     </footer>
+
+    <script type="text/javascript">
+      let year = (new Date()).getFullYear();
+      document.getElementById("current-year").innerHTML = year.toString();
+    </script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
