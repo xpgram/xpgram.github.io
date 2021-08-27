@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.081d7026.chunk.css",
+    "main.js": "/static/js/main.15dfae1e.chunk.js",
+    "main.js.map": "/static/js/main.15dfae1e.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.fc9a8ffd.js",
+    "runtime-main.js.map": "/static/js/runtime-main.fc9a8ffd.js.map",
+    "static/js/2.ad662156.chunk.js": "/static/js/2.ad662156.chunk.js",
+    "static/js/2.ad662156.chunk.js.map": "/static/js/2.ad662156.chunk.js.map",
+    "static/js/3.9a97d64a.chunk.js": "/static/js/3.9a97d64a.chunk.js",
+    "static/js/3.9a97d64a.chunk.js.map": "/static/js/3.9a97d64a.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.081d7026.chunk.css.map": "/static/css/main.081d7026.chunk.css.map",
+    "static/js/2.ad662156.chunk.js.LICENSE.txt": "/static/js/2.ad662156.chunk.js.LICENSE.txt",
+    "static/media/index.scss": "/static/media/NunitoSans-Regular.87d92665.ttf",
+    "static/media/PixilBG.b7bc999b.png": "/static/media/PixilBG.b7bc999b.png",
+    "static/media/PixilBG_faded.2ed1c1c9.png": "/static/media/PixilBG_faded.2ed1c1c9.png",
+    "static/media/advance-wars-clone.dea361b1.png": "/static/media/advance-wars-clone.dea361b1.png",
+    "static/media/d.V.6db2b67a.png": "/static/media/d.V.6db2b67a.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fc9a8ffd.js",
+    "static/js/2.ad662156.chunk.js",
+    "static/css/main.081d7026.chunk.css",
+    "static/js/main.15dfae1e.chunk.js"
+  ]
+}

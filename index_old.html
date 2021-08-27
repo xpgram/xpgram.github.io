@@ -1,0 +1,217 @@
+<!--
+I'm too tired and lazy to do this right now, so here are changes I want to make:
+
+ - Put a top-notch triple-A indie game in the black stuff behind my logo.
+ - Also, update my logo.
+
+ - Refactor, or re-write maybe, the website to be mobile first, then expandable.
+    - The nav bar should have additional options for getting to 'Contact' etc. when the layout is smaller.
+      I can probably do that with 'display: hidden'
+ - Behind those sections, add a few lighter-gray pixel effects for pleasantness.
+    I'm thinking a pixel fog or something like that. Just add flair to the edges of the screen.
+ - Maybe add some flair to each section? Why stick with Lux, huh?
+ - Add my pixel font for the headers, too.
+
+Some projects to consider showing off:
+ - Get TecTac in Javascript working.
+ - Make sure budgetboy actually is presentable.
+
+-->
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="./css/bootstrap_lux.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+
+    <title>deivn.vkola</title>
+  </head>
+  <body>
+
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-default navbar-expand-lg sticky-top bg-xpg-black">
+        <div class="container">
+
+            <div class="navbar-brand">
+                <img src="./img/dV_logo.png" width="36" height="40" class="img-responsive" id="logo">
+                <span class="text-light">&nbsp;deivn<span class="text-xpg">.</span>vkola</span>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <ul class="navbar-nav flex-row">
+              <li class="nav-item active">
+                <a class="nav-link text-light" href="#about">About Me</a>
+              </li>
+              <div class="navbar-separator"></div>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="#projects">Projects</a>
+              </li>
+              <!-- <div class="navbar-separator"></div>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="#contact">Contact</a>
+              </li> -->
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Marquee -->
+    <section id="landing" class="container-fluid bg-primary bg-xpg">
+      <div class="row h-100">
+        <div class="col-md-12 my-auto">
+          <div class="mx-auto text-center text-nowrap align-middle d-block">
+            <img src="./img/d.V.png" alt="" class="img-db img-fluid align-middle">
+          </div>
+        </div>
+      </div>
+
+      <!-- Add some kind of horizontal rule, #A15481, that invites the user to scroll down -->
+      <!-- Add it here, I mean -->
+
+    </section>
+
+    <!-- Info Panel -->
+    <section id="info" class="container-fluid bg-primary p-3">
+
+      <div class="xpg-std-container">
+
+        <div class="row justify-content-between">
+
+          <!-- About Me Section -->
+          <div id="about" class="w-xpg-l text-xpg-light bg-xpg-black p-3 mb-3 mx-0">
+            <h1 class="text-xpg-light text-nowrap pb-2">About Me</h1>
+            <div class="pb-3 text-xpg-light">
+              <p>
+                I'm an indie games developer and artist based in Oregon.
+              </p>
+              <p>
+                I've been thinking, writing, playing and designing games since I was a small-ish, young-ish boy,
+                and one day I'll prove it.
+              </p>
+              <p>
+                I started experimenting with computers and game-design while using GameMaker sometime in 2006.
+                I've since graduated my interests to music composition, graphic design, sound design, writing,
+                art & animation; really, everything. I like learning.
+              </p>
+              <p>
+                I am, first, working on building a career right now. If you need help designing something, send me an email.
+              </p>
+            </div>
+          </div>
+
+            <!-- What I Know Section -->
+            <div id="skills" class="w-xpg-m text-xpg-light bg-primary p-3 mb-3 mx-0">
+              <h1 class="text-xpg-light text-nowrap pb-2">What I Know</h1>
+              <div class="pb-3 text-xpg-light">
+                <p class="mb-1">Languages</p>
+                <p>
+                  Javascript / Typescript / HTML & CSS<br>
+                  C# / C++ / .NET Framework / TSQL<br>
+                  Python / Lua / Java
+                </p>
+                <p class="mb-1">Tools</p>
+                <p>React / Django / Unity / SSMS / Pixi.js</p>
+                <br>
+                <img src="./img/velo-blue.svg" width="128" alt="">
+              </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div id="contact" class="w-xpg-s text-xpg-light bg-primary p-3 mb-3 mx-0">
+              <h1 class="text-xpg-light text-nowrap pb-2">Contact</h1>
+              <div class="pb-3 text-xpg-light">
+                <p><a class="link text-xpg-light text-nowrap pl-1" href="mailto:deivn.vkola@gmail.com" target="_blank">deivn.vkola@gmail.com</a></p>
+                <!-- Buttons for career/social accounts -->
+                <div class="pb-2">
+                  <a class="btn btn-xpg btn-xpg-black" href="https://www.linkedin.com/in/deivn-vkola" target="_blank" role="button">
+                    LinkedIn <img src="./img/icon_extlink.png" width="14" alt="">
+                  </a>
+                </div>
+                <div class="pb-2">
+                  <a class="btn btn-xpg btn-xpg-black" href="https://github.com/xpgram" target="_blank" role="button">
+                    github <img src="./img/icon_extlink.png" width="14" alt="">
+                  </a>
+                </div>
+              </div>
+            </div>
+
+        </div>
+
+        <!-- Demos or pictures of my work -->
+        <div class="row">
+          <div id="projects" class="w-100 text-xpg-light bg-xpg-black p-3 mb-3 mx-0">
+            <h1 class="text-xpg-light text-nowrap pb-2">Projects</h1>
+            <div class="pb-3 text-xpg-light">
+
+              <a class="link text-xpg-light text-nowrap" href="./armed-revolt/game.html" target="_blank">Advance Wars Clone <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+              <p class="text-xpg-light xpg-project-desc">
+                Still in early stages; proper play has yet to be implemented.<br>
+                Features a complete terrain and unit set; a turn management system which allows unit selection, movement and battle (no battle animations, though); randomly generated maps;
+                and authentically replicated minutiae from the source game. This project will eventually be unlisted for the obvious legal reasons, but the work will live on in my own project.
+              </p>
+
+              <a class="link text-xpg-light text-nowrap" href="https://github.com/xpgram/movie-api-web" target="_blank">Movie Lookup — React/Django Test <img src="./img/icon_extlink.png" width="14" alt=""></a>
+              <a class="link text-xpg-light text-nowrap" href="http://xpg-movie-api-web.herokuapp.com/" target="_blank">Public <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+              <p class="test-xpg-light xpg-project-desc">
+                A website which uses the OMDb Api to search for movies via a flashy website.<br>
+                The public link is hosted by Heroku on a free account so it *will* take a moment for Heroku to spin up the server dyno on first access.<br>
+                The site also has its own backend voting system. It does not have a system for user accounts or IDs, so it has no way of verifying you haven't once voted before, but alas~.
+              </p>
+
+              <a class="link text-xpg-light text-nowrap" href="https://deivnvkola.wixsite.com/mysite" target="_blank">Wix Site — AddressBook <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+              <p class="text-xpg-light xpg-project-desc">
+                Completed for Wix certification. Keeps track of a user's personal contacts. Log in and add one, I dare you.<br>
+                Users are prevented from seeing any contact which is not their own, even if they have a link to one. It's also integrated with SendGrid to allow
+                users to send emails directly from the site to anyone in their contacts.
+              </p>
+
+              <a class="link text-xpg-light text-nowrap" href="https://github.com/xpgram/budgetboy" target="_blank">Budgetboy <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+              <p class="text-xpg-light xpg-project-desc">
+                A CLI script written in Python which, if you tell it what your bills are, will tell you when they're due forever. It has a calendar scroll and is capable of projecting long-term financial outcomes.
+                I use it frequently to remind myself what I'm subscribed to.
+              </p>
+              
+              <br> <!-- Subsection Break -->
+
+              <h5 class="mb-1 text-xpg-light">Assignments from The Tech Academy:</h5>
+              <p>
+                <a class="link text-xpg-light text-nowrap" href="https://github.com/xpgram/Construction-LiveProj" target="_blank">Write-up on the two-week sprint I worked for Prosper IT Consulting<img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+                <!-- I can't deploy my IIS stuff, so link to a repository with pictures and text and code pls n thk u. -->
+                <a class="link text-xpg-light text-nowrap" href="./TicTacToe/TicTacToe_xpg.html" target="_blank">Tic Tac Toe with HTML <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+                <a class="link text-xpg-light text-nowrap" href="./CinnamonWeb/index.html" target="_blank">Cinema Showtimes with Bootstrap and one jQuery <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+                <a class="link text-xpg-light text-nowrap" href="./PizzaOrderForm/pizza_website.html" target="_blank">Pizza Order Form <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+                <a class="link text-xpg-light text-nowrap" href="https://github.com/xpgram/SQL-Final-Project" target="_blank">SQL Mock Library Book-Database <img src="./img/icon_extlink.png" width="14" alt=""></a><br>
+              </p>
+
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /Info Section Container -->
+
+    </section>
+
+    <!-- Copyright (Ha!) -->
+    <footer id="footer" class="container-fluid bg-primary bg-xpg">
+      <h5 class="text-xpg-light text-right p-1">&copy; Dei Valko &nbsp;|&nbsp; <span id="current-year"></span></h5>
+    </footer>
+
+    <script type="text/javascript">
+      let year = (new Date()).getFullYear();
+      document.getElementById("current-year").innerHTML = year.toString();
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.buttflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
