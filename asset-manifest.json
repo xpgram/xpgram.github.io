@@ -1,27 +1,30 @@
 {
   "files": {
-    "main.css": "/static/css/main.5a546eb1.chunk.css",
-    "main.js": "/static/js/main.56420b43.chunk.js",
-    "main.js.map": "/static/js/main.56420b43.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.b143624b.js",
-    "runtime-main.js.map": "/static/js/runtime-main.b143624b.js.map",
-    "static/js/2.76cf2c57.chunk.js": "/static/js/2.76cf2c57.chunk.js",
-    "static/js/2.76cf2c57.chunk.js.map": "/static/js/2.76cf2c57.chunk.js.map",
-    "static/js/3.cbcc4384.chunk.js": "/static/js/3.cbcc4384.chunk.js",
-    "static/js/3.cbcc4384.chunk.js.map": "/static/js/3.cbcc4384.chunk.js.map",
+    "main.css": "/static/css/main.b51cda15.chunk.css",
+    "main.js": "/static/js/main.f153b332.chunk.js",
+    "main.js.map": "/static/js/main.f153b332.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.22a4670a.js",
+    "runtime-main.js.map": "/static/js/runtime-main.22a4670a.js.map",
+    "static/js/2.d64d7016.chunk.js": "/static/js/2.d64d7016.chunk.js",
+    "static/js/2.d64d7016.chunk.js.map": "/static/js/2.d64d7016.chunk.js.map",
+    "static/js/3.598bede6.chunk.js": "/static/js/3.598bede6.chunk.js",
+    "static/js/3.598bede6.chunk.js.map": "/static/js/3.598bede6.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.5a546eb1.chunk.css.map": "/static/css/main.5a546eb1.chunk.css.map",
-    "static/js/2.76cf2c57.chunk.js.LICENSE.txt": "/static/js/2.76cf2c57.chunk.js.LICENSE.txt",
+    "static/css/main.b51cda15.chunk.css.map": "/static/css/main.b51cda15.chunk.css.map",
+    "static/js/2.d64d7016.chunk.js.LICENSE.txt": "/static/js/2.d64d7016.chunk.js.LICENSE.txt",
     "static/media/index.scss": "/static/media/NunitoSans-Regular.87d92665.ttf",
     "static/media/PixilBG.b7bc999b.png": "/static/media/PixilBG.b7bc999b.png",
     "static/media/PixilBG_faded.2ed1c1c9.png": "/static/media/PixilBG_faded.2ed1c1c9.png",
-    "static/media/advance-wars-clone.dea361b1.png": "/static/media/advance-wars-clone.dea361b1.png",
-    "static/media/d.V.6db2b67a.png": "/static/media/d.V.6db2b67a.png"
+    "static/media/advance-wars-clone.png": "/static/media/advance-wars-clone.dea361b1.png",
+    "static/media/budgetboy.png": "/static/media/budgetboy.81ab9118.png",
+    "static/media/d.V.6db2b67a.png": "/static/media/d.V.6db2b67a.png",
+    "static/media/movie-web-1.png": "/static/media/movie-web-1.12025d47.png",
+    "static/media/movie-web-2.png": "/static/media/movie-web-2.1f02a6b2.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.b143624b.js",
-    "static/js/2.76cf2c57.chunk.js",
-    "static/css/main.5a546eb1.chunk.css",
-    "static/js/main.56420b43.chunk.js"
+    "static/js/runtime-main.22a4670a.js",
+    "static/js/2.d64d7016.chunk.js",
+    "static/css/main.b51cda15.chunk.css",
+    "static/js/main.f153b332.chunk.js"
   ]
 }
