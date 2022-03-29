@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.c29aa41a.chunk.css",
-    "main.js": "/static/js/main.b8fd08b4.chunk.js",
-    "main.js.map": "/static/js/main.b8fd08b4.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.22a4670a.js",
-    "runtime-main.js.map": "/static/js/runtime-main.22a4670a.js.map",
-    "static/js/2.25680438.chunk.js": "/static/js/2.25680438.chunk.js",
-    "static/js/2.25680438.chunk.js.map": "/static/js/2.25680438.chunk.js.map",
-    "static/js/3.598bede6.chunk.js": "/static/js/3.598bede6.chunk.js",
-    "static/js/3.598bede6.chunk.js.map": "/static/js/3.598bede6.chunk.js.map",
+    "main.css": "/static/css/main.1717c2b2.chunk.css",
+    "main.js": "/static/js/main.165e2860.chunk.js",
+    "main.js.map": "/static/js/main.165e2860.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.700b9fcc.js",
+    "runtime-main.js.map": "/static/js/runtime-main.700b9fcc.js.map",
+    "static/js/2.b80aa652.chunk.js": "/static/js/2.b80aa652.chunk.js",
+    "static/js/2.b80aa652.chunk.js.map": "/static/js/2.b80aa652.chunk.js.map",
+    "static/js/3.ee4216b0.chunk.js": "/static/js/3.ee4216b0.chunk.js",
+    "static/js/3.ee4216b0.chunk.js.map": "/static/js/3.ee4216b0.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.c29aa41a.chunk.css.map": "/static/css/main.c29aa41a.chunk.css.map",
-    "static/js/2.25680438.chunk.js.LICENSE.txt": "/static/js/2.25680438.chunk.js.LICENSE.txt",
-    "static/media/index.scss": "/static/media/NunitoSans-Regular.87d92665.ttf",
+    "static/css/main.1717c2b2.chunk.css.map": "/static/css/main.1717c2b2.chunk.css.map",
+    "static/js/2.b80aa652.chunk.js.LICENSE.txt": "/static/js/2.b80aa652.chunk.js.LICENSE.txt",
+    "static/media/HeaderLogo.scss": "/static/media/TitilliumWeb-Regular.522ebad2.ttf",
     "static/media/PixilBG.b7bc999b.png": "/static/media/PixilBG.b7bc999b.png",
     "static/media/PixilBG_faded.2ed1c1c9.png": "/static/media/PixilBG_faded.2ed1c1c9.png",
     "static/media/advance-wars-clone.png": "/static/media/advance-wars-clone.dea361b1.png",
@@ -22,9 +22,9 @@
     "static/media/movie-web-2.png": "/static/media/movie-web-2.1f02a6b2.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.22a4670a.js",
-    "static/js/2.25680438.chunk.js",
-    "static/css/main.c29aa41a.chunk.css",
-    "static/js/main.b8fd08b4.chunk.js"
+    "static/js/runtime-main.700b9fcc.js",
+    "static/js/2.b80aa652.chunk.js",
+    "static/css/main.1717c2b2.chunk.css",
+    "static/js/main.165e2860.chunk.js"
   ]
 }
