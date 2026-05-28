@@ -1,0 +1,4 @@
+import{ad as r,A as t,B as p,C as e,$ as s}from"../chunks/BOHjU6zU.js";import"../chunks/DsnmJJEf.js";import"../chunks/B6dNV6el.js";const d=r,l=d,g=Object.freeze(Object.defineProperty({__proto__:null,csr:l},Symbol.toStringTag,{value:"Module"}));var c=t('<meta name="description" content="About this app"/>'),v=t(`<div class="text-column"><h1>About this app</h1> <p>This is a <a href="https://svelte.dev/docs/kit">SvelteKit</a> app. You can make your own by typing
+		the following into your command line and following the prompts:</p> <pre>npx sv create</pre> <p>The page you're looking at is purely static HTML, with no client-side interactivity needed.
+		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
+		the devtools network panel and reloading.</p></div>`);function y(o){var a=v();p(n=>{var i=c();s.title="About",e(n,i)}),e(o,a)}export{y as component,g as universal};
